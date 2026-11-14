@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:smart_access_security/core/router/app_router.dart';
+import 'package:smart_access_security/core/security/screen_protection.dart';
 import 'package:smart_access_security/core/theme/app_theme.dart';
 import 'package:smart_access_security/features/auth/presentation/controllers/auto_lock_controller.dart';
 import 'package:smart_access_security/features/geofence/presentation/controllers/geofence_monitor.dart';
@@ -19,7 +20,10 @@ class SmartAccessApp extends ConsumerWidget {
     // Watching keeps the auto-lock service alive for the app's lifetime.
     final autoLock = ref.watch(autoLockProvider);
     // Geofence entry / exit detection runs for the app's whole lifetime.
-    ref.watch(geofenceMonitorProvider);
+    ref
+      ..watch(geofenceMonitorProvider)
+      // Applies the screenshot-protection setting to the platform.
+      ..watch(screenProtectionProvider);
 
     return MaterialApp.router(
       title: 'Smart Access & Location Security',

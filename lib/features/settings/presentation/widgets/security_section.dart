@@ -9,7 +9,8 @@ import 'package:smart_access_security/features/settings/domain/entities/app_sett
 import 'package:smart_access_security/features/settings/presentation/controllers/settings_controller.dart';
 import 'package:smart_access_security/features/settings/presentation/settings_labels.dart';
 
-/// Biometric toggle, auto-lock duration and change PIN.
+/// Biometric toggle, auto-lock duration, screenshot protection and
+/// change PIN.
 class SecuritySection extends ConsumerWidget {
   const SecuritySection({super.key});
 
@@ -28,6 +29,17 @@ class SecuritySection extends ConsumerWidget {
           subtitle: Text(settings.autoLockDuration.label),
           trailing: const Icon(Icons.chevron_right),
           onTap: () => _pickAutoLock(context, ref, settings.autoLockDuration),
+        ),
+        SwitchListTile(
+          secondary: const Icon(Icons.screenshot_monitor_outlined),
+          title: const Text('Screenshot protection'),
+          subtitle: const Text(
+            'Block screenshots, screen recording and the app preview.',
+          ),
+          value: settings.screenshotProtection,
+          onChanged: (value) => ref
+              .read(settingsControllerProvider.notifier)
+              .setScreenshotProtection(enabled: value),
         ),
         ListTile(
           leading: const Icon(Icons.password_outlined),
