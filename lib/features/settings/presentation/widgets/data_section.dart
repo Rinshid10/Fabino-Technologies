@@ -16,10 +16,9 @@ class DataSection extends ConsumerWidget {
     final geofenceCount =
         ref.watch(geofenceListControllerProvider).value?.length ?? 0;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return SectionCard(
+      title: 'Data on this device',
       children: [
-        const SectionHeader('Data on this device'),
         ListTile(
           leading: const Icon(Icons.history),
           title: const Text('Clear history'),

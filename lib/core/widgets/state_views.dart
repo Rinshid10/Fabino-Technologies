@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smart_access_security/core/widgets/soft_surface.dart';
 
 /// Centred progress indicator with an optional label.
 class LoadingView extends StatelessWidget {
@@ -54,12 +55,18 @@ class MessageView extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(
-                icon,
-                size: 56,
-                color: iconColor ?? theme.colorScheme.onSurfaceVariant,
+              SizedBox.square(
+                dimension: 96,
+                child: SoftSurface(
+                  isCircle: true,
+                  child: Icon(
+                    icon,
+                    size: 40,
+                    color: iconColor ?? theme.colorScheme.primary,
+                  ),
+                ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 28),
               Text(
                 title,
                 style: theme.textTheme.titleMedium,

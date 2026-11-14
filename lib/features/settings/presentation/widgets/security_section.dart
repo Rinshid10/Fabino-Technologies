@@ -18,10 +18,9 @@ class SecuritySection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final settings = ref.watch(settingsControllerProvider);
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return SectionCard(
+      title: 'Security',
       children: [
-        const SectionHeader('Security'),
         const _BiometricTile(),
         ListTile(
           leading: const Icon(Icons.timer_outlined),

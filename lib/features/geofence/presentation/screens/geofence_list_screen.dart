@@ -8,6 +8,8 @@ import 'package:smart_access_security/core/utils/formatters.dart';
 import 'package:smart_access_security/core/widgets/app_map.dart';
 import 'package:smart_access_security/core/widgets/async_value_view.dart';
 import 'package:smart_access_security/core/widgets/responsive.dart';
+import 'package:smart_access_security/core/widgets/section_header.dart';
+import 'package:smart_access_security/core/widgets/soft_surface.dart';
 import 'package:smart_access_security/core/widgets/state_views.dart';
 import 'package:smart_access_security/features/geofence/domain/entities/geofence.dart';
 import 'package:smart_access_security/features/geofence/presentation/controllers/geofence_list_controller.dart';
@@ -71,13 +73,12 @@ class _GeofenceOverview extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final map = _GeofenceMap(geofences: geofences);
-    final list = ListView.separated(
+    final list = ListView.builder(
       // Leave room for the floating button below the last row.
-      padding: const EdgeInsets.only(bottom: 88),
+      padding: const EdgeInsets.only(top: 4, bottom: 96),
       itemCount: geofences.length,
-      separatorBuilder: (_, _) => const Divider(height: 1),
       itemBuilder: (context, index) =>
-          GeofenceListTile(geofence: geofences[index]),
+          SoftPanel(child: GeofenceListTile(geofence: geofences[index])),
     );
 
     if (context.isWide) {
@@ -146,8 +147,8 @@ class GeofenceListTile extends ConsumerWidget {
     final isInside = geofence.presence == GeofencePresence.inside;
 
     return ListTile(
-      leading: Icon(
-        isInside ? Icons.radio_button_checked : Icons.radar_outlined,
+      leading: SoftIconWell(
+        icon: isInside ? Icons.radio_button_checked : Icons.radar_outlined,
         color: isInside ? scheme.success : null,
       ),
       title: Text(geofence.name),

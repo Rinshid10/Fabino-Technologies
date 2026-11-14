@@ -5,6 +5,8 @@ import 'package:smart_access_security/core/router/routes.dart';
 import 'package:smart_access_security/core/utils/formatters.dart';
 import 'package:smart_access_security/core/widgets/async_value_view.dart';
 import 'package:smart_access_security/core/widgets/responsive.dart';
+import 'package:smart_access_security/core/widgets/section_header.dart';
+import 'package:smart_access_security/core/widgets/soft_surface.dart';
 import 'package:smart_access_security/core/widgets/state_views.dart';
 import 'package:smart_access_security/features/tracking/domain/entities/tracking_session.dart';
 import 'package:smart_access_security/features/tracking/presentation/controllers/tracking_history_controller.dart';
@@ -34,11 +36,12 @@ class TrackingHistoryScreen extends ConsumerWidget {
                 message: 'Finished tracking sessions appear here.',
               )
             : ContentWidth(
-                child: ListView.separated(
+                child: ListView.builder(
+                  padding: const EdgeInsets.symmetric(vertical: 12),
                   itemCount: sessions.length,
-                  separatorBuilder: (_, _) => const Divider(height: 1),
-                  itemBuilder: (context, index) =>
-                      SessionListTile(session: sessions[index]),
+                  itemBuilder: (context, index) => SoftPanel(
+                    child: SessionListTile(session: sessions[index]),
+                  ),
                 ),
               ),
       ),
@@ -56,7 +59,7 @@ class SessionListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     return ListTile(
-      leading: const Icon(Icons.route_outlined),
+      leading: const SoftIconWell(icon: Icons.route_outlined),
       title: Text(Formatters.dateTime(session.startedAt)),
       subtitle: Text(
         '${Formatters.distance(session.distanceMeters)} · '

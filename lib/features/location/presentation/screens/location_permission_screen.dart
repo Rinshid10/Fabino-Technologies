@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:smart_access_security/core/widgets/section_header.dart';
+import 'package:smart_access_security/core/widgets/soft_surface.dart';
 import 'package:smart_access_security/features/location/domain/entities/location_status.dart';
 import 'package:smart_access_security/features/location/presentation/controllers/location_status_controller.dart';
 
@@ -52,12 +54,20 @@ class _LocationPermissionScreenState
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Icon(
-                    Icons.location_on_outlined,
-                    size: 64,
-                    color: theme.colorScheme.primary,
+                  Center(
+                    child: SizedBox.square(
+                      dimension: 96,
+                      child: SoftSurface(
+                        isCircle: true,
+                        child: Icon(
+                          Icons.location_on_outlined,
+                          size: 40,
+                          color: theme.colorScheme.primary,
+                        ),
+                      ),
+                    ),
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 28),
                   Text(
                     'Allow location access',
                     style: theme.textTheme.headlineSmall,
@@ -126,11 +136,14 @@ class _Reason extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      contentPadding: EdgeInsets.zero,
-      leading: Icon(icon),
-      title: Text(title),
-      subtitle: Text(text),
+    return SoftPanel(
+      margin: const EdgeInsets.symmetric(vertical: 8),
+      padding: EdgeInsets.zero,
+      child: ListTile(
+        leading: SoftIconWell(icon: icon),
+        title: Text(title),
+        subtitle: Text(text),
+      ),
     );
   }
 }

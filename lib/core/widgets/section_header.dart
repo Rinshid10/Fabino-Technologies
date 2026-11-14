@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smart_access_security/core/widgets/soft_surface.dart';
 
 /// Small coloured heading used to group items in lists and settings.
 class SectionHeader extends StatelessWidget {
@@ -10,13 +11,71 @@ class SectionHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 24, 16, 8),
+      padding: const EdgeInsets.fromLTRB(24, 28, 24, 12),
       child: Text(
-        title,
-        style: theme.textTheme.titleSmall?.copyWith(
+        title.toUpperCase(),
+        style: theme.textTheme.labelMedium?.copyWith(
           color: theme.colorScheme.primary,
+          fontWeight: FontWeight.w700,
+          letterSpacing: 1.1,
         ),
       ),
+    );
+  }
+}
+
+/// A raised panel that holds list rows or other content.
+///
+/// The transparent [Material] lets ink splashes of `ListTile`s show on
+/// top of the panel.
+class SoftPanel extends StatelessWidget {
+  const SoftPanel({
+    required this.child,
+    this.margin = const EdgeInsets.symmetric(horizontal: 20, vertical: 9),
+    this.padding = const EdgeInsets.symmetric(vertical: 6),
+    super.key,
+  });
+
+  final Widget child;
+  final EdgeInsetsGeometry margin;
+  final EdgeInsetsGeometry padding;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: margin,
+      child: SoftSurface(
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(22),
+          child: Material(
+            type: MaterialType.transparency,
+            child: Padding(padding: padding, child: child),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// A titled group of rows inside one raised panel, as used in settings.
+class SectionCard extends StatelessWidget {
+  const SectionCard({required this.title, required this.children, super.key});
+
+  final String title;
+  final List<Widget> children;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        SectionHeader(title),
+        SoftPanel(
+          margin: const EdgeInsets.symmetric(horizontal: 20),
+          child: Column(mainAxisSize: MainAxisSize.min, children: children),
+        ),
+      ],
     );
   }
 }
