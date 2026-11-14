@@ -5,7 +5,38 @@ import 'package:smart_access_security/core/widgets/soft_surface.dart';
 /// Visual tone of a [StatusCard].
 enum StatusTone { neutral, good, warning, bad }
 
-/// A card showing one piece of status: icon, title, value, detail.
+/// How a [StatusCard] is laid out.
+enum StatusCardLayout {
+  /// A standalone card: icon on top, text below.
+  tile,
+
+  /// A compact row for use inside a panel: icon left, text right.
+  row,
+}
+
+/// Sets the [StatusCardLayout] for every [StatusCard] below it, so a
+/// screen can arrange the same cards as tiles or as rows.
+class StatusCardTheme extends InheritedWidget {
+  const StatusCardTheme({
+    required this.layout,
+    required super.child,
+    super.key,
+  });
+
+  final StatusCardLayout layout;
+
+  static StatusCardLayout of(BuildContext context) {
+    final theme = context.dependOnInheritedWidgetOfExactType<StatusCardTheme>();
+    return theme?.layout ?? StatusCardLayout.tile;
+  }
+
+  @override
+  bool updateShouldNotify(StatusCardTheme oldWidget) {
+    return layout != oldWidget.layout;
+  }
+}
+
+/// One piece of status: icon, title, value and an optional detail line.
 class StatusCard extends StatelessWidget {
   const StatusCard({
     required this.icon,
@@ -36,65 +67,99 @@ class StatusCard extends StatelessWidget {
       StatusTone.warning => scheme.warning,
       StatusTone.bad => scheme.error,
     };
+    final detail = this.detail;
 
-    return SoftPressable(
-      onTap: onTap,
-      semanticLabel: title,
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Row(
-            children: [
-              SoftIconWell(icon: icon, color: toneColor),
-              const Spacer(),
-              if (onTap != null)
-                Icon(
-                  Icons.chevron_right,
-                  size: 20,
-                  color: scheme.onSurfaceVariant,
-                ),
-            ],
-          ),
-          const SizedBox(height: 14),
-          Text(
-            title,
-            style: theme.textTheme.labelMedium?.copyWith(
+    final titleText = Text(
+      title,
+      style: theme.textTheme.labelMedium?.copyWith(
+        color: scheme.onSurfaceVariant,
+      ),
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+    );
+    final valueText = isLoading
+        ? const Padding(
+            padding: EdgeInsets.symmetric(vertical: 3),
+            child: SizedBox.square(
+              dimension: 16,
+              child: CircularProgressIndicator(strokeWidth: 2),
+            ),
+          )
+        : Text(
+            value,
+            style: theme.textTheme.titleMedium?.copyWith(
+              color: toneColor,
+              fontWeight: FontWeight.w700,
+            ),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          );
+    final detailText = detail == null || isLoading
+        ? null
+        : Text(
+            detail,
+            style: theme.textTheme.bodySmall?.copyWith(
               color: scheme.onSurfaceVariant,
             ),
-            maxLines: 1,
+            maxLines: 2,
             overflow: TextOverflow.ellipsis,
+          );
+    final chevron = onTap == null
+        ? null
+        : Icon(Icons.chevron_right, size: 20, color: scheme.onSurfaceVariant);
+
+    return switch (StatusCardTheme.of(context)) {
+      StatusCardLayout.row => InkWell(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          child: Row(
+            children: [
+              SoftIconWell(icon: icon, color: toneColor, size: 42),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    titleText,
+                    const SizedBox(height: 2),
+                    valueText,
+                    ?detailText,
+                  ],
+                ),
+              ),
+              ?chevron,
+            ],
           ),
-          const SizedBox(height: 4),
-          if (isLoading)
-            const SizedBox.square(
-              dimension: 20,
-              child: CircularProgressIndicator(strokeWidth: 2),
-            )
-          else
-            Text(
-              value,
-              style: theme.textTheme.titleMedium?.copyWith(
-                color: toneColor,
-                fontWeight: FontWeight.w700,
-              ),
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-            ),
-          if (detail != null && !isLoading) ...[
-            const SizedBox(height: 4),
-            Text(
-              detail!,
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: scheme.onSurfaceVariant,
-              ),
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ],
-        ],
+        ),
       ),
-    );
+      StatusCardLayout.tile => SoftPressable(
+        onTap: onTap,
+        semanticLabel: title,
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              children: [
+                SoftIconWell(icon: icon, color: toneColor, size: 42),
+                const Spacer(),
+                ?chevron,
+              ],
+            ),
+            const SizedBox(height: 14),
+            titleText,
+            const SizedBox(height: 4),
+            valueText,
+            if (detailText != null) ...[
+              const SizedBox(height: 4),
+              detailText,
+            ],
+          ],
+        ),
+      ),
+    };
   }
 }
