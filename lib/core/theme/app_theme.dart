@@ -44,6 +44,11 @@ abstract final class AppTheme {
     shadow: Color(0xFF15171A),
   );
 
+  /// The depth colours that belong to [brightness].
+  static DepthTheme depthFor(Brightness brightness) {
+    return brightness == Brightness.light ? _lightDepth : _darkDepth;
+  }
+
   static ThemeData light() => _build(Brightness.light);
 
   static ThemeData dark() => _build(Brightness.dark);
@@ -51,7 +56,7 @@ abstract final class AppTheme {
   static ThemeData _build(Brightness brightness) {
     final isLight = brightness == Brightness.light;
     final base = isLight ? _lightBase : _darkBase;
-    final depth = isLight ? _lightDepth : _darkDepth;
+    final depth = depthFor(brightness);
     final scheme =
         ColorScheme.fromSeed(
           seedColor: _seed,
@@ -160,7 +165,12 @@ abstract final class AppTheme {
 
 /// Access to the depth colours from a [BuildContext].
 extension DepthContext on BuildContext {
-  DepthTheme get depth => Theme.of(this).extension<DepthTheme>()!;
+  /// Falls back to the built-in colours when a theme (for example in a
+  /// widget test) does not carry the extension.
+  DepthTheme get depth {
+    final theme = Theme.of(this);
+    return theme.extension<DepthTheme>() ?? AppTheme.depthFor(theme.brightness);
+  }
 }
 
 /// Semantic colours that are not part of [ColorScheme].
