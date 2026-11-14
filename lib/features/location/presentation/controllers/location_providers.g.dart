@@ -59,7 +59,7 @@ final class PositionStreamServiceProvider
 }
 
 String _$positionStreamServiceHash() =>
-    r'8c807357fa2ba06be7690315d8dec14e6fb49442';
+    r'd1dec727807870ad2dc7d215e57310cb7d1239a3';
 
 /// The device's current position.
 ///

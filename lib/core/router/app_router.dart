@@ -9,6 +9,8 @@ import 'package:smart_access_security/features/auth/presentation/screens/change_
 import 'package:smart_access_security/features/auth/presentation/screens/lock_screen.dart';
 import 'package:smart_access_security/features/auth/presentation/screens/pin_setup_screen.dart';
 import 'package:smart_access_security/features/dashboard/presentation/screens/dashboard_screen.dart';
+import 'package:smart_access_security/features/geofence/presentation/screens/geofence_editor_screen.dart';
+import 'package:smart_access_security/features/geofence/presentation/screens/geofence_list_screen.dart';
 import 'package:smart_access_security/features/location/presentation/screens/location_permission_screen.dart';
 import 'package:smart_access_security/features/location/presentation/screens/map_screen.dart';
 import 'package:smart_access_security/features/settings/presentation/screens/settings_screen.dart';
@@ -34,6 +36,11 @@ const _destinations = [
     label: 'Tracking',
     icon: Icons.route_outlined,
     selectedIcon: Icons.route,
+  ),
+  ShellDestination(
+    label: 'Geofences',
+    icon: Icons.radar_outlined,
+    selectedIcon: Icons.radar,
   ),
   ShellDestination(
     label: 'Settings',
@@ -107,6 +114,26 @@ GoRouter appRouter(Ref ref) {
                         ),
                       ),
                     ],
+                  ),
+                ],
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: Routes.geofences,
+                builder: (context, state) => const GeofenceListScreen(),
+                routes: [
+                  GoRoute(
+                    path: 'new',
+                    builder: (context, state) => const GeofenceEditorScreen(),
+                  ),
+                  GoRoute(
+                    path: ':id/edit',
+                    builder: (context, state) => GeofenceEditorScreen(
+                      geofenceId: state.pathParameters['id'],
+                    ),
                   ),
                 ],
               ),
