@@ -9,6 +9,8 @@ import 'package:smart_access_security/features/auth/presentation/screens/change_
 import 'package:smart_access_security/features/auth/presentation/screens/lock_screen.dart';
 import 'package:smart_access_security/features/auth/presentation/screens/pin_setup_screen.dart';
 import 'package:smart_access_security/features/dashboard/presentation/screens/dashboard_screen.dart';
+import 'package:smart_access_security/features/location/presentation/screens/location_permission_screen.dart';
+import 'package:smart_access_security/features/location/presentation/screens/map_screen.dart';
 import 'package:smart_access_security/features/settings/presentation/screens/settings_screen.dart';
 
 part 'app_router.g.dart';
@@ -19,6 +21,11 @@ const _destinations = [
     label: 'Dashboard',
     icon: Icons.shield_outlined,
     selectedIcon: Icons.shield,
+  ),
+  ShellDestination(
+    label: 'Map',
+    icon: Icons.map_outlined,
+    selectedIcon: Icons.map,
   ),
   ShellDestination(
     label: 'Settings',
@@ -49,6 +56,10 @@ GoRouter appRouter(Ref ref) {
         path: Routes.lock,
         builder: (context, state) => const LockScreen(),
       ),
+      GoRoute(
+        path: Routes.locationPermission,
+        builder: (context, state) => const LocationPermissionScreen(),
+      ),
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) => AppShell(
           navigationShell: navigationShell,
@@ -60,6 +71,14 @@ GoRouter appRouter(Ref ref) {
               GoRoute(
                 path: Routes.dashboard,
                 builder: (context, state) => const DashboardScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: Routes.map,
+                builder: (context, state) => const MapScreen(),
               ),
             ],
           ),
