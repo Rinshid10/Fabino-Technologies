@@ -12,6 +12,9 @@ import 'package:smart_access_security/features/dashboard/presentation/screens/da
 import 'package:smart_access_security/features/location/presentation/screens/location_permission_screen.dart';
 import 'package:smart_access_security/features/location/presentation/screens/map_screen.dart';
 import 'package:smart_access_security/features/settings/presentation/screens/settings_screen.dart';
+import 'package:smart_access_security/features/tracking/presentation/screens/session_detail_screen.dart';
+import 'package:smart_access_security/features/tracking/presentation/screens/tracking_history_screen.dart';
+import 'package:smart_access_security/features/tracking/presentation/screens/tracking_screen.dart';
 
 part 'app_router.g.dart';
 
@@ -26,6 +29,11 @@ const _destinations = [
     label: 'Map',
     icon: Icons.map_outlined,
     selectedIcon: Icons.map,
+  ),
+  ShellDestination(
+    label: 'Tracking',
+    icon: Icons.route_outlined,
+    selectedIcon: Icons.route,
   ),
   ShellDestination(
     label: 'Settings',
@@ -79,6 +87,28 @@ GoRouter appRouter(Ref ref) {
               GoRoute(
                 path: Routes.map,
                 builder: (context, state) => const MapScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: Routes.tracking,
+                builder: (context, state) => const TrackingScreen(),
+                routes: [
+                  GoRoute(
+                    path: 'history',
+                    builder: (context, state) => const TrackingHistoryScreen(),
+                    routes: [
+                      GoRoute(
+                        path: ':id',
+                        builder: (context, state) => SessionDetailScreen(
+                          sessionId: state.pathParameters['id']!,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ],
           ),

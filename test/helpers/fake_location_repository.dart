@@ -69,11 +69,6 @@ class FakeLocationRepository implements LocationRepository {
   Future<LocationPermissionStatus> requestPermission() async => permission;
 
   @override
-  Future<LocationPermissionStatus> requestBackgroundPermission() async {
-    return permission;
-  }
-
-  @override
   Future<bool> isServiceEnabled() async => serviceEnabled;
 
   @override

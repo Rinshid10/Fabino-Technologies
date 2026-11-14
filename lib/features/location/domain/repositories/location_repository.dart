@@ -8,9 +8,6 @@ abstract interface class LocationRepository {
   /// Shows the system permission dialog when it can still be shown.
   Future<LocationPermissionStatus> requestPermission();
 
-  /// Asks to upgrade to "allow all the time" for background tracking.
-  Future<LocationPermissionStatus> requestBackgroundPermission();
-
   Future<bool> isServiceEnabled();
 
   /// Emits whenever the user switches the location service on or off.

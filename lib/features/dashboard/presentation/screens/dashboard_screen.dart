@@ -3,6 +3,7 @@ import 'package:smart_access_security/core/widgets/responsive.dart';
 import 'package:smart_access_security/features/dashboard/presentation/widgets/auth_cards.dart';
 import 'package:smart_access_security/features/dashboard/presentation/widgets/dashboard_grid.dart';
 import 'package:smart_access_security/features/dashboard/presentation/widgets/location_cards.dart';
+import 'package:smart_access_security/features/dashboard/presentation/widgets/tracking_card.dart';
 
 /// Home screen: a grid of security status cards.
 class DashboardScreen extends StatelessWidget {
@@ -22,6 +23,7 @@ class DashboardScreen extends StatelessWidget {
               LocationPermissionCard(),
               GpsCard(),
               CurrentLocationCard(),
+              TrackingCard(),
             ],
           ),
         ),

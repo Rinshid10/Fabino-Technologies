@@ -1,0 +1,8 @@
+targets:
+  $default:
+    builders:
+      json_serializable:
+        options:
+          # Nested models (for example the points of a tracking session)
+          # are written as JSON maps, not left as Dart objects.
+          explicit_to_json: true

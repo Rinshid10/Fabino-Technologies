@@ -45,13 +45,6 @@ class LocationStatusController extends _$LocationStatusController {
     return permission;
   }
 
-  /// Asks for "allow all the time" so tracking continues in the background.
-  Future<LocationPermissionStatus> requestBackgroundPermission() async {
-    final permission = await _repository.requestBackgroundPermission();
-    await refresh();
-    return permission;
-  }
-
   Future<void> openLocationSettings() => _repository.openLocationSettings();
 
   Future<void> openAppSettings() => _repository.openAppSettings();

@@ -46,7 +46,7 @@ final class LocationStatusControllerProvider
 }
 
 String _$locationStatusControllerHash() =>
-    r'f9cbb49b3e680ac2c85c82d33350d67d6d2a8c96';
+    r'5ea6b22a72f3051671c8c320d6e2191cf7aa4272';
 
 /// Location permission and GPS on/off, kept up to date.
 ///

@@ -21,11 +21,14 @@ PositionStreamService positionStreamService(Ref ref) {
   // revoked. Reopen it for the waiting consumers once location is back.
   ref
     ..listen(
+      // `null` while the status is still loading, so the first load is
+      // not mistaken for location coming back.
       locationStatusControllerProvider.select(
-        (status) => status.value?.isReady ?? false,
+        (status) => status.value?.isReady,
       ),
       (wasReady, isReady) {
-        if (isReady && !(wasReady ?? false)) unawaited(service.restart());
+        final cameBack = wasReady == false && (isReady ?? false);
+        if (cameBack) unawaited(service.restart());
       },
     )
     ..onDispose(service.dispose);

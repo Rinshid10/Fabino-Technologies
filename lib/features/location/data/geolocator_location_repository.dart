@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:permission_handler/permission_handler.dart' as permissions;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:smart_access_security/core/errors/failures.dart';
 import 'package:smart_access_security/features/location/domain/entities/location_fix.dart';
@@ -11,8 +10,7 @@ import 'package:smart_access_security/features/location/domain/repositories/loca
 
 part 'geolocator_location_repository.g.dart';
 
-/// [LocationRepository] backed by `geolocator` (and `permission_handler`
-/// for the background-permission upgrade).
+/// [LocationRepository] backed by `geolocator`.
 class GeolocatorLocationRepository implements LocationRepository {
   const GeolocatorLocationRepository();
 
@@ -30,12 +28,6 @@ class GeolocatorLocationRepository implements LocationRepository {
   @override
   Future<LocationPermissionStatus> requestPermission() async {
     return _toStatus(await Geolocator.requestPermission());
-  }
-
-  @override
-  Future<LocationPermissionStatus> requestBackgroundPermission() async {
-    await permissions.Permission.locationAlways.request();
-    return checkPermission();
   }
 
   @override
