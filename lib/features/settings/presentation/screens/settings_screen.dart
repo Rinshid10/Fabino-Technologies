@@ -1,0 +1,21 @@
+import 'package:flutter/material.dart';
+import 'package:smart_access_security/core/widgets/responsive.dart';
+import 'package:smart_access_security/features/settings/presentation/widgets/appearance_section.dart';
+
+/// App preferences, grouped into sections.
+class SettingsScreen extends StatelessWidget {
+  const SettingsScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Settings')),
+      body: ContentWidth(
+        child: ListView(
+          padding: const EdgeInsets.only(bottom: 24),
+          children: const [AppearanceSection()],
+        ),
+      ),
+    );
+  }
+}
