@@ -5,8 +5,38 @@ import 'package:smart_access_security/core/widgets/soft_surface.dart';
 /// Visual tone of a [StatusCard].
 enum StatusTone { neutral, good, warning, bad }
 
-/// A white card showing one piece of status. Its tone colours the left
-/// edge, the icon circle and the value.
+/// How a [StatusCard] is laid out.
+enum StatusCardLayout {
+  /// A standalone card: icon on top, text below.
+  tile,
+
+  /// A compact row for use inside a panel: icon left, text right.
+  row,
+}
+
+/// Sets the [StatusCardLayout] for every [StatusCard] below it, so a
+/// screen can arrange the same cards as tiles or as rows.
+class StatusCardTheme extends InheritedWidget {
+  const StatusCardTheme({
+    required this.layout,
+    required super.child,
+    super.key,
+  });
+
+  final StatusCardLayout layout;
+
+  static StatusCardLayout of(BuildContext context) {
+    final theme = context.dependOnInheritedWidgetOfExactType<StatusCardTheme>();
+    return theme?.layout ?? StatusCardLayout.tile;
+  }
+
+  @override
+  bool updateShouldNotify(StatusCardTheme oldWidget) {
+    return layout != oldWidget.layout;
+  }
+}
+
+/// One piece of status: icon, title, value and an optional detail line.
 class StatusCard extends StatelessWidget {
   const StatusCard({
     required this.icon,
@@ -27,8 +57,6 @@ class StatusCard extends StatelessWidget {
   final VoidCallback? onTap;
   final bool isLoading;
 
-  static const _radius = 26.0;
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -41,86 +69,97 @@ class StatusCard extends StatelessWidget {
     };
     final detail = this.detail;
 
-    return SoftPressable(
-      onTap: onTap,
-      semanticLabel: title,
-      radius: _radius,
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(_radius),
-        child: Stack(
-          children: [
-            // The coloured edge that follows the card's rounded corner.
-            Positioned(
-              left: 0,
-              top: 0,
-              bottom: 0,
-              width: 5,
-              child: ColoredBox(color: toneColor.withValues(alpha: 0.45)),
+    final titleText = Text(
+      title,
+      style: theme.textTheme.labelMedium?.copyWith(
+        color: scheme.onSurfaceVariant,
+      ),
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+    );
+    final valueText = isLoading
+        ? const Padding(
+            padding: EdgeInsets.symmetric(vertical: 3),
+            child: SizedBox.square(
+              dimension: 16,
+              child: CircularProgressIndicator(strokeWidth: 2),
             ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(18, 16, 12, 18),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Row(
-                    children: [
-                      SoftIconWell(icon: icon, color: toneColor, size: 46),
-                      const Spacer(),
-                      if (onTap != null)
-                        Icon(
-                          Icons.chevron_right,
-                          color: scheme.onSurfaceVariant,
-                        ),
-                    ],
-                  ),
-                  const SizedBox(height: 14),
-                  Text(
-                    title,
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: scheme.onSurfaceVariant,
-                      fontWeight: FontWeight.w500,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  const SizedBox(height: 4),
-                  if (isLoading)
-                    const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 4),
-                      child: SizedBox.square(
-                        dimension: 18,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      ),
-                    )
-                  else
-                    Text(
-                      value,
-                      style: theme.textTheme.titleLarge?.copyWith(
-                        color: toneColor,
-                        fontSize: 20,
-                        fontWeight: FontWeight.w700,
-                      ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  if (detail != null && !isLoading) ...[
-                    const SizedBox(height: 6),
-                    Text(
-                      detail,
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        color: scheme.onSurfaceVariant,
-                      ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
+          )
+        : Text(
+            value,
+            style: theme.textTheme.titleMedium?.copyWith(
+              color: toneColor,
+              fontWeight: FontWeight.w700,
+            ),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          );
+    final detailText = detail == null || isLoading
+        ? null
+        : Text(
+            detail,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: scheme.onSurfaceVariant,
+            ),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          );
+    final chevron = onTap == null
+        ? null
+        : Icon(Icons.chevron_right, size: 20, color: scheme.onSurfaceVariant);
+
+    return switch (StatusCardTheme.of(context)) {
+      StatusCardLayout.row => InkWell(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          child: Row(
+            children: [
+              SoftIconWell(icon: icon, color: toneColor, size: 42),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    titleText,
+                    const SizedBox(height: 2),
+                    valueText,
+                    ?detailText,
                   ],
-                ],
+                ),
               ),
+              ?chevron,
+            ],
+          ),
+        ),
+      ),
+      StatusCardLayout.tile => SoftPressable(
+        onTap: onTap,
+        semanticLabel: title,
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              children: [
+                SoftIconWell(icon: icon, color: toneColor, size: 42),
+                const Spacer(),
+                ?chevron,
+              ],
             ),
+            const SizedBox(height: 14),
+            titleText,
+            const SizedBox(height: 4),
+            valueText,
+            if (detailText != null) ...[
+              const SizedBox(height: 4),
+              detailText,
+            ],
           ],
         ),
       ),
-    );
+    };
   }
 }

@@ -30,7 +30,7 @@ class LocationPermissionCard extends ConsumerWidget {
       },
       tone: switch (permission) {
         null => StatusTone.warning,
-        LocationPermissionStatus.denied => StatusTone.bad,
+        LocationPermissionStatus.denied => StatusTone.warning,
         LocationPermissionStatus.deniedForever => StatusTone.bad,
         _ => StatusTone.good,
       },
