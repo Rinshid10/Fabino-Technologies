@@ -7,7 +7,7 @@ class DashboardGrid extends StatelessWidget {
   const DashboardGrid({
     required this.children,
     this.minCardWidth = 150,
-    this.spacing = 20,
+    this.spacing = 14,
     super.key,
   });
 

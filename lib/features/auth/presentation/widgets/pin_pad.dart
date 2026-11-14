@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:smart_access_security/core/widgets/soft_surface.dart';
 
 /// Numeric keypad: digits 1-9, then [action] (optional), 0 and backspace.
-/// Every key is a raised round button that sinks in when pressed.
+/// Every key is a round button that shrinks slightly when pressed.
 class PinPad extends StatelessWidget {
   const PinPad({
     required this.onDigit,
@@ -58,7 +58,6 @@ class PinPad extends StatelessWidget {
       child: SoftPressable(
         key: ValueKey('pin-key-$digit'),
         isCircle: true,
-        depth: 5,
         fadeWhenDisabled: true,
         semanticLabel: digit,
         onTap: enabled ? () => onDigit(digit) : null,

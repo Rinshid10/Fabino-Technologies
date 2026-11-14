@@ -88,17 +88,7 @@ class _PinEntryViewState extends State<PinEntryView> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              SizedBox.square(
-                dimension: 84,
-                child: SoftSurface(
-                  isCircle: true,
-                  child: Icon(
-                    widget.icon,
-                    size: 36,
-                    color: theme.colorScheme.primary,
-                  ),
-                ),
-              ),
+              SoftIconWell(icon: widget.icon, size: 76),
               const SizedBox(height: 24),
               Text(
                 widget.title,

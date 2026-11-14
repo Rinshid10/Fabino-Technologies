@@ -24,7 +24,7 @@ class SectionHeader extends StatelessWidget {
   }
 }
 
-/// A raised panel that holds list rows or other content.
+/// A card that holds list rows or other content.
 ///
 /// The transparent [Material] lets ink splashes of `ListTile`s show on
 /// top of the panel.
@@ -46,7 +46,7 @@ class SoftPanel extends StatelessWidget {
       padding: margin,
       child: SoftSurface(
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(22),
+          borderRadius: BorderRadius.circular(20),
           child: Material(
             type: MaterialType.transparency,
             child: Padding(padding: padding, child: child),
@@ -57,7 +57,7 @@ class SoftPanel extends StatelessWidget {
   }
 }
 
-/// A titled group of rows inside one raised panel, as used in settings.
+/// A titled group of rows inside one card, as used in settings.
 class SectionCard extends StatelessWidget {
   const SectionCard({required this.title, required this.children, super.key});
 

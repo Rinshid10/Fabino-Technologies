@@ -5,7 +5,7 @@ import 'package:smart_access_security/core/widgets/soft_surface.dart';
 /// Visual tone of a [StatusCard].
 enum StatusTone { neutral, good, warning, bad }
 
-/// A raised card showing one piece of status: icon, title, value, detail.
+/// A card showing one piece of status: icon, title, value, detail.
 class StatusCard extends StatelessWidget {
   const StatusCard({
     required this.icon,

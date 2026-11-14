@@ -69,13 +69,12 @@ class AppMap extends StatelessWidget {
       ],
     );
 
-    // The map sits in a raised frame with rounded corners.
+    // The map is a rounded card like every other surface.
     return Padding(
-      padding: const EdgeInsets.all(14),
+      padding: const EdgeInsets.all(12),
       child: SoftSurface(
-        radius: 26,
-        padding: const EdgeInsets.all(5),
-        child: ClipRRect(borderRadius: BorderRadius.circular(21), child: map),
+        radius: 22,
+        child: ClipRRect(borderRadius: BorderRadius.circular(22), child: map),
       ),
     );
   }

@@ -4,7 +4,7 @@ import 'package:smart_access_security/core/widgets/soft_surface.dart';
 /// One choice of a [SoftSegmented] control.
 typedef SoftSegment<T> = ({T value, IconData icon, String label});
 
-/// A row of raised buttons where the selected one stays pressed in.
+/// A row of buttons where the selected one is tinted.
 class SoftSegmented<T> extends StatelessWidget {
   const SoftSegmented({
     required this.segments,

@@ -55,17 +55,7 @@ class MessageView extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              SizedBox.square(
-                dimension: 96,
-                child: SoftSurface(
-                  isCircle: true,
-                  child: Icon(
-                    icon,
-                    size: 40,
-                    color: iconColor ?? theme.colorScheme.primary,
-                  ),
-                ),
-              ),
+              SoftIconWell(icon: icon, size: 84, color: iconColor),
               const SizedBox(height: 28),
               Text(
                 title,

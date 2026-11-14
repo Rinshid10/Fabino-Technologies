@@ -1,18 +1,29 @@
 import 'package:flutter/material.dart';
 
-/// The two colours that create the soft 3D look: a light edge towards the
-/// top-left and a shadow towards the bottom-right of every raised surface.
+/// Colours for the app's surfaces: cards sit slightly above the
+/// background, separated by a very soft shadow rather than borders.
 @immutable
 class DepthTheme extends ThemeExtension<DepthTheme> {
-  const DepthTheme({required this.highlight, required this.shadow});
+  const DepthTheme({
+    required this.card,
+    required this.pressed,
+    required this.shadow,
+  });
 
-  final Color highlight;
+  /// Fill of cards, panels and keys.
+  final Color card;
+
+  /// Fill of a card while it is pressed or selected.
+  final Color pressed;
+
+  /// Colour of the soft shadow under cards.
   final Color shadow;
 
   @override
-  DepthTheme copyWith({Color? highlight, Color? shadow}) {
+  DepthTheme copyWith({Color? card, Color? pressed, Color? shadow}) {
     return DepthTheme(
-      highlight: highlight ?? this.highlight,
+      card: card ?? this.card,
+      pressed: pressed ?? this.pressed,
       shadow: shadow ?? this.shadow,
     );
   }
@@ -21,30 +32,33 @@ class DepthTheme extends ThemeExtension<DepthTheme> {
   DepthTheme lerp(DepthTheme? other, double t) {
     if (other == null) return this;
     return DepthTheme(
-      highlight: Color.lerp(highlight, other.highlight, t)!,
+      card: Color.lerp(card, other.card, t)!,
+      pressed: Color.lerp(pressed, other.pressed, t)!,
       shadow: Color.lerp(shadow, other.shadow, t)!,
     );
   }
 }
 
-/// Material 3 themes for the app: one calm base colour that every surface
-/// shares, depth from light and shadow, and a single accent colour.
+/// Material 3 themes for the app: a quiet background, clean cards, one
+/// accent colour and no decoration beyond a soft shadow.
 abstract final class AppTheme {
   static const _seed = Color(0xFF3D6DEB);
 
-  static const _lightBase = Color(0xFFE8ECF2);
-  static const _darkBase = Color(0xFF25282D);
+  static const _lightBackground = Color(0xFFF4F5F8);
+  static const _darkBackground = Color(0xFF14161A);
 
   static const _lightDepth = DepthTheme(
-    highlight: Color(0xFFFFFFFF),
-    shadow: Color(0xFFB4BFD0),
+    card: Color(0xFFFFFFFF),
+    pressed: Color(0xFFECEFF5),
+    shadow: Color(0x141B2A4A),
   );
   static const _darkDepth = DepthTheme(
-    highlight: Color(0xFF32363C),
-    shadow: Color(0xFF15171A),
+    card: Color(0xFF1D2025),
+    pressed: Color(0xFF282C33),
+    shadow: Color(0x33000000),
   );
 
-  /// The depth colours that belong to [brightness].
+  /// The surface colours that belong to [brightness].
   static DepthTheme depthFor(Brightness brightness) {
     return brightness == Brightness.light ? _lightDepth : _darkDepth;
   }
@@ -55,7 +69,7 @@ abstract final class AppTheme {
 
   static ThemeData _build(Brightness brightness) {
     final isLight = brightness == Brightness.light;
-    final base = isLight ? _lightBase : _darkBase;
+    final background = isLight ? _lightBackground : _darkBackground;
     final depth = depthFor(brightness);
     final scheme =
         ColorScheme.fromSeed(
@@ -64,54 +78,49 @@ abstract final class AppTheme {
         ).copyWith(
           primary: isLight ? _seed : const Color(0xFF8CA8FF),
           onPrimary: isLight ? Colors.white : const Color(0xFF0E1B3D),
-          surface: base,
-          surfaceContainerLowest: base,
-          surfaceContainerLow: base,
-          surfaceContainer: base,
-          surfaceContainerHigh: base,
-          surfaceContainerHighest: Color.alphaBlend(
-            depth.shadow.withValues(alpha: 0.25),
-            base,
-          ),
+          surface: background,
+          surfaceContainerLowest: depth.card,
+          surfaceContainerLow: depth.card,
+          surfaceContainer: depth.card,
+          surfaceContainerHigh: depth.card,
+          surfaceContainerHighest: depth.pressed,
         );
     const buttonShape = RoundedRectangleBorder(
-      borderRadius: BorderRadius.all(Radius.circular(16)),
+      borderRadius: BorderRadius.all(Radius.circular(14)),
     );
 
     return ThemeData(
       useMaterial3: true,
       colorScheme: scheme,
-      scaffoldBackgroundColor: base,
+      scaffoldBackgroundColor: background,
       extensions: [depth],
       appBarTheme: AppBarTheme(
         centerTitle: false,
-        backgroundColor: base,
+        backgroundColor: background,
         surfaceTintColor: Colors.transparent,
         scrolledUnderElevation: 0,
         titleTextStyle: TextStyle(
           color: scheme.onSurface,
           fontSize: 22,
-          fontWeight: FontWeight.w700,
+          fontWeight: FontWeight.w600,
         ),
       ),
       navigationBarTheme: NavigationBarThemeData(
-        backgroundColor: base,
+        backgroundColor: depth.card,
         surfaceTintColor: Colors.transparent,
-        elevation: 12,
-        shadowColor: depth.shadow,
-        indicatorColor: scheme.primary.withValues(alpha: 0.16),
+        elevation: 0,
+        indicatorColor: scheme.primary.withValues(alpha: 0.12),
         height: 68,
       ),
       navigationRailTheme: NavigationRailThemeData(
-        backgroundColor: base,
-        indicatorColor: scheme.primary.withValues(alpha: 0.16),
+        backgroundColor: depth.card,
+        indicatorColor: scheme.primary.withValues(alpha: 0.12),
       ),
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
           minimumSize: const Size(64, 52),
           shape: buttonShape,
-          elevation: 6,
-          shadowColor: scheme.primary.withValues(alpha: 0.5),
+          elevation: 0,
           textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
         ),
       ),
@@ -124,36 +133,34 @@ abstract final class AppTheme {
       floatingActionButtonTheme: FloatingActionButtonThemeData(
         backgroundColor: scheme.primary,
         foregroundColor: scheme.onPrimary,
-        elevation: 8,
+        elevation: 2,
+        highlightElevation: 2,
         shape: buttonShape,
       ),
       dialogTheme: DialogThemeData(
-        backgroundColor: base,
+        backgroundColor: depth.card,
         surfaceTintColor: Colors.transparent,
-        elevation: 16,
-        shadowColor: depth.shadow,
+        elevation: 2,
         shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(24)),
+          borderRadius: BorderRadius.all(Radius.circular(22)),
         ),
       ),
       popupMenuTheme: PopupMenuThemeData(
-        color: base,
+        color: depth.card,
         surfaceTintColor: Colors.transparent,
-        elevation: 12,
-        shadowColor: depth.shadow,
+        elevation: 3,
         shape: buttonShape,
       ),
-      // Text fields look pressed into the surface.
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: Color.alphaBlend(depth.shadow.withValues(alpha: 0.22), base),
+        fillColor: depth.pressed,
         border: const OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(16)),
+          borderRadius: BorderRadius.all(Radius.circular(14)),
           borderSide: BorderSide.none,
         ),
       ),
       dividerTheme: DividerThemeData(
-        color: depth.shadow.withValues(alpha: 0.35),
+        color: scheme.outlineVariant.withValues(alpha: 0.5),
       ),
       snackBarTheme: const SnackBarThemeData(
         behavior: SnackBarBehavior.floating,
@@ -163,7 +170,7 @@ abstract final class AppTheme {
   }
 }
 
-/// Access to the depth colours from a [BuildContext].
+/// Access to the surface colours from a [BuildContext].
 extension DepthContext on BuildContext {
   /// Falls back to the built-in colours when a theme (for example in a
   /// widget test) does not carry the extension.

@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:smart_access_security/core/theme/app_theme.dart';
 
-/// The building block of the app's soft 3D look.
-///
-/// It has the same colour as the background and gets its shape purely
-/// from light and shadow: raised by default, or pressed into the surface
-/// with [isPressed].
+/// The app's basic surface: a clean card with rounded corners and one
+/// very soft shadow. With [isPressed] it turns flat and slightly tinted,
+/// which is also how a selected item looks.
 class SoftSurface extends StatelessWidget {
   const SoftSurface({
     required this.child,
-    this.radius = 22,
-    this.depth = 6,
+    this.radius = 20,
     this.isPressed = false,
     this.isCircle = false,
     this.padding,
@@ -19,70 +16,46 @@ class SoftSurface extends StatelessWidget {
 
   final Widget child;
   final double radius;
-
-  /// How far the surface appears to stand out, in logical pixels.
-  final double depth;
   final bool isPressed;
   final bool isCircle;
   final EdgeInsetsGeometry? padding;
 
+  static const _animation = Duration(milliseconds: 180);
+
   @override
   Widget build(BuildContext context) {
-    final base = Theme.of(context).scaffoldBackgroundColor;
     final colors = context.depth;
 
     return AnimatedContainer(
-      duration: const Duration(milliseconds: 120),
+      duration: _animation,
+      curve: Curves.easeOut,
       padding: padding,
       decoration: BoxDecoration(
         shape: isCircle ? BoxShape.circle : BoxShape.rectangle,
         borderRadius: isCircle ? null : BorderRadius.circular(radius),
-        color: isPressed ? null : base,
-        // A pressed surface is lit the other way round: dark at the
-        // top-left rim, light at the bottom-right.
-        gradient: isPressed
-            ? LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  Color.alphaBlend(colors.shadow.withValues(alpha: 0.45), base),
-                  Color.alphaBlend(
-                    colors.highlight.withValues(alpha: 0.6),
-                    base,
-                  ),
-                ],
-              )
-            : null,
-        boxShadow: isPressed
-            ? null
-            : [
-                BoxShadow(
-                  color: colors.shadow,
-                  offset: Offset(depth, depth),
-                  blurRadius: depth * 2.2,
-                ),
-                BoxShadow(
-                  color: colors.highlight,
-                  offset: Offset(-depth, -depth),
-                  blurRadius: depth * 2.2,
-                ),
-              ],
+        color: isPressed ? colors.pressed : colors.card,
+        boxShadow: [
+          BoxShadow(
+            color: isPressed ? Colors.transparent : colors.shadow,
+            offset: const Offset(0, 4),
+            blurRadius: 16,
+          ),
+        ],
       ),
       child: child,
     );
   }
 }
 
-/// A [SoftSurface] that sinks in while it is being pressed.
+/// A [SoftSurface] that responds to touch with a smooth, slight shrink.
 ///
-/// With a `null` [onTap] it is a plain raised surface (or a faded one when
+/// With a `null` [onTap] it is a plain surface (or a faded one when
 /// [fadeWhenDisabled] is set, for disabled buttons).
 class SoftPressable extends StatefulWidget {
   const SoftPressable({
     required this.child,
     this.onTap,
-    this.radius = 22,
-    this.depth = 6,
+    this.radius = 20,
     this.isCircle = false,
     this.padding,
     this.fadeWhenDisabled = false,
@@ -93,7 +66,6 @@ class SoftPressable extends StatefulWidget {
   final Widget child;
   final VoidCallback? onTap;
   final double radius;
-  final double depth;
   final bool isCircle;
   final EdgeInsetsGeometry? padding;
   final bool fadeWhenDisabled;
@@ -117,14 +89,14 @@ class _SoftPressableState extends State<SoftPressable> {
     final onTap = widget.onTap;
     final surface = SoftSurface(
       radius: widget.radius,
-      depth: widget.depth,
       isCircle: widget.isCircle,
       isPressed: _isDown,
       padding: widget.padding,
       child: widget.child,
     );
     if (onTap == null) {
-      return Opacity(
+      return AnimatedOpacity(
+        duration: const Duration(milliseconds: 180),
         opacity: widget.fadeWhenDisabled ? 0.45 : 1,
         child: surface,
       );
@@ -139,13 +111,18 @@ class _SoftPressableState extends State<SoftPressable> {
         onTapUp: (_) => _setDown(false),
         onTapCancel: () => _setDown(false),
         onTap: onTap,
-        child: surface,
+        child: AnimatedScale(
+          scale: _isDown ? 0.97 : 1,
+          duration: const Duration(milliseconds: 140),
+          curve: Curves.easeOut,
+          child: surface,
+        ),
       ),
     );
   }
 }
 
-/// A small round well, pressed into the surface, that holds an icon.
+/// An icon on a flat, lightly tinted circle.
 class SoftIconWell extends StatelessWidget {
   const SoftIconWell({
     required this.icon,
@@ -155,18 +132,22 @@ class SoftIconWell extends StatelessWidget {
   });
 
   final IconData icon;
+
+  /// Colour of the icon; the circle uses a faint tint of it.
   final Color? color;
   final double size;
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox.square(
-      dimension: size,
-      child: SoftSurface(
-        isCircle: true,
-        isPressed: true,
-        child: Icon(icon, size: size * 0.5, color: color),
+    final tone = color ?? Theme.of(context).colorScheme.primary;
+    return Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: tone.withValues(alpha: 0.1),
       ),
+      child: Icon(icon, size: size * 0.5, color: tone),
     );
   }
 }

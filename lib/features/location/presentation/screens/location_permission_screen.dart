@@ -54,17 +54,10 @@ class _LocationPermissionScreenState
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Center(
-                    child: SizedBox.square(
-                      dimension: 96,
-                      child: SoftSurface(
-                        isCircle: true,
-                        child: Icon(
-                          Icons.location_on_outlined,
-                          size: 40,
-                          color: theme.colorScheme.primary,
-                        ),
-                      ),
+                  const Center(
+                    child: SoftIconWell(
+                      icon: Icons.location_on_outlined,
+                      size: 84,
                     ),
                   ),
                   const SizedBox(height: 28),
