@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:smart_access_security/core/theme/app_theme.dart';
 import 'package:smart_access_security/core/utils/formatters.dart';
+import 'package:smart_access_security/core/widgets/soft_surface.dart';
 import 'package:smart_access_security/features/location/domain/entities/location_fix.dart';
 import 'package:smart_access_security/features/location/presentation/controllers/location_providers.dart';
 import 'package:smart_access_security/features/location/presentation/location_labels.dart';
@@ -22,7 +23,7 @@ class LocationDetailsCard extends ConsumerWidget {
       ),
     );
 
-    return Card(
+    return SoftSurface(
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(

@@ -9,6 +9,7 @@ import 'package:smart_access_security/core/widgets/app_map.dart';
 import 'package:smart_access_security/core/widgets/async_value_view.dart';
 import 'package:smart_access_security/core/widgets/confirm_dialog.dart';
 import 'package:smart_access_security/core/widgets/responsive.dart';
+import 'package:smart_access_security/core/widgets/soft_surface.dart';
 import 'package:smart_access_security/core/widgets/state_views.dart';
 import 'package:smart_access_security/features/location/presentation/widgets/mock_location_banner.dart';
 import 'package:smart_access_security/features/tracking/domain/entities/tracking_session.dart';
@@ -155,7 +156,7 @@ class _SummaryCard extends StatelessWidget {
     final theme = Theme.of(context);
     final endedAt = session.endedAt;
 
-    return Card(
+    return SoftSurface(
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:smart_access_security/core/constants/app_constants.dart';
+import 'package:smart_access_security/core/widgets/soft_surface.dart';
 import 'package:smart_access_security/features/auth/presentation/widgets/lockout_countdown.dart';
 import 'package:smart_access_security/features/auth/presentation/widgets/pin_dots.dart';
 import 'package:smart_access_security/features/auth/presentation/widgets/pin_pad.dart';
@@ -87,8 +88,18 @@ class _PinEntryViewState extends State<PinEntryView> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(widget.icon, size: 40, color: theme.colorScheme.primary),
-              const SizedBox(height: 16),
+              SizedBox.square(
+                dimension: 84,
+                child: SoftSurface(
+                  isCircle: true,
+                  child: Icon(
+                    widget.icon,
+                    size: 36,
+                    color: theme.colorScheme.primary,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 24),
               Text(
                 widget.title,
                 style: theme.textTheme.headlineSmall,

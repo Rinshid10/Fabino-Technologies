@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:smart_access_security/core/widgets/soft_surface.dart';
 
 /// Numeric keypad: digits 1-9, then [action] (optional), 0 and backspace.
+/// Every key is a raised round button that sinks in when pressed.
 class PinPad extends StatelessWidget {
   const PinPad({
     required this.onDigit,
@@ -31,11 +33,11 @@ class PinPad extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           for (final row in _rows)
-            Row(children: [for (final digit in row) _digitKey(digit)]),
+            Row(children: [for (final digit in row) _digitKey(context, digit)]),
           Row(
             children: [
               _PadSlot(child: action),
-              _digitKey('0'),
+              _digitKey(context, '0'),
               _PadSlot(
                 child: IconButton(
                   tooltip: 'Delete',
@@ -50,17 +52,24 @@ class PinPad extends StatelessWidget {
     );
   }
 
-  Widget _digitKey(String digit) {
+  Widget _digitKey(BuildContext context, String digit) {
+    final theme = Theme.of(context);
     return _PadSlot(
-      child: FilledButton.tonal(
+      child: SoftPressable(
         key: ValueKey('pin-key-$digit'),
-        onPressed: enabled ? () => onDigit(digit) : null,
-        style: FilledButton.styleFrom(
-          shape: const CircleBorder(),
-          padding: EdgeInsets.zero,
-          textStyle: const TextStyle(fontSize: 24),
+        isCircle: true,
+        depth: 5,
+        fadeWhenDisabled: true,
+        semanticLabel: digit,
+        onTap: enabled ? () => onDigit(digit) : null,
+        child: Center(
+          child: Text(
+            digit,
+            style: theme.textTheme.headlineSmall?.copyWith(
+              fontWeight: FontWeight.w600,
+            ),
+          ),
         ),
-        child: Text(digit),
       ),
     );
   }
@@ -76,9 +85,9 @@ class _PadSlot extends StatelessWidget {
   Widget build(BuildContext context) {
     return Expanded(
       child: AspectRatio(
-        aspectRatio: 1.25,
+        aspectRatio: 1,
         child: Padding(
-          padding: const EdgeInsets.all(6),
+          padding: const EdgeInsets.all(11),
           child: child == null ? null : SizedBox.expand(child: child),
         ),
       ),

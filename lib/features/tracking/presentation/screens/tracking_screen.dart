@@ -6,6 +6,7 @@ import 'package:smart_access_security/core/router/routes.dart';
 import 'package:smart_access_security/core/widgets/app_map.dart';
 import 'package:smart_access_security/core/widgets/async_value_view.dart';
 import 'package:smart_access_security/core/widgets/responsive.dart';
+import 'package:smart_access_security/core/widgets/soft_surface.dart';
 import 'package:smart_access_security/features/location/presentation/controllers/location_providers.dart';
 import 'package:smart_access_security/features/location/presentation/location_labels.dart';
 import 'package:smart_access_security/features/location/presentation/widgets/location_gate.dart';
@@ -150,7 +151,7 @@ class _ControlPanel extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.all(12),
-      child: Card(
+      child: SoftSurface(
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Column(

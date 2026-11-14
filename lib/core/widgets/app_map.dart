@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:smart_access_security/core/widgets/soft_surface.dart';
 
 /// The app's map: OpenStreetMap tiles plus whatever [layers] a screen adds.
 ///
@@ -38,7 +39,7 @@ class AppMap extends StatelessWidget {
     final onTap = this.onTap;
     final onLongPress = this.onLongPress;
 
-    return FlutterMap(
+    final map = FlutterMap(
       mapController: controller,
       options: MapOptions(
         initialCenter: initialCenter,
@@ -66,6 +67,16 @@ class AppMap extends StatelessWidget {
           source: Text('OpenStreetMap contributors'),
         ),
       ],
+    );
+
+    // The map sits in a raised frame with rounded corners.
+    return Padding(
+      padding: const EdgeInsets.all(14),
+      child: SoftSurface(
+        radius: 26,
+        padding: const EdgeInsets.all(5),
+        child: ClipRRect(borderRadius: BorderRadius.circular(21), child: map),
+      ),
     );
   }
 }

@@ -157,9 +157,9 @@ class _GeofenceFormState extends ConsumerState<_GeofenceForm> {
         ),
         if (center == null)
           const Positioned(
-            left: 12,
-            right: 12,
-            top: 12,
+            left: 30,
+            right: 30,
+            top: 30,
             child: _MapHint('Tap or long-press the map to place the geofence'),
           ),
       ],

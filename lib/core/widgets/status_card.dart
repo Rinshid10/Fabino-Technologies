@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:smart_access_security/core/theme/app_theme.dart';
+import 'package:smart_access_security/core/widgets/soft_surface.dart';
 
 /// Visual tone of a [StatusCard].
 enum StatusTone { neutral, good, warning, bad }
 
-/// A compact card showing one piece of status: icon, title, value, detail.
+/// A raised card showing one piece of status: icon, title, value, detail.
 class StatusCard extends StatelessWidget {
   const StatusCard({
     required this.icon,
@@ -36,68 +37,63 @@ class StatusCard extends StatelessWidget {
       StatusTone.bad => scheme.error,
     };
 
-    return Card(
-      clipBehavior: Clip.antiAlias,
-      child: InkWell(
-        onTap: onTap,
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
+    return SoftPressable(
+      onTap: onTap,
+      semanticLabel: title,
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
             children: [
-              Row(
-                children: [
-                  Icon(icon, color: toneColor),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      title,
-                      style: theme.textTheme.labelLarge?.copyWith(
-                        color: scheme.onSurfaceVariant,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                  if (onTap != null)
-                    Icon(
-                      Icons.chevron_right,
-                      size: 20,
-                      color: scheme.onSurfaceVariant,
-                    ),
-                ],
-              ),
-              const SizedBox(height: 12),
-              if (isLoading)
-                const SizedBox.square(
-                  dimension: 20,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                )
-              else
-                Text(
-                  value,
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    color: toneColor,
-                    fontWeight: FontWeight.w600,
-                  ),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
+              SoftIconWell(icon: icon, color: toneColor),
+              const Spacer(),
+              if (onTap != null)
+                Icon(
+                  Icons.chevron_right,
+                  size: 20,
+                  color: scheme.onSurfaceVariant,
                 ),
-              if (detail != null && !isLoading) ...[
-                const SizedBox(height: 4),
-                Text(
-                  detail!,
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: scheme.onSurfaceVariant,
-                  ),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ],
             ],
           ),
-        ),
+          const SizedBox(height: 14),
+          Text(
+            title,
+            style: theme.textTheme.labelMedium?.copyWith(
+              color: scheme.onSurfaceVariant,
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+          const SizedBox(height: 4),
+          if (isLoading)
+            const SizedBox.square(
+              dimension: 20,
+              child: CircularProgressIndicator(strokeWidth: 2),
+            )
+          else
+            Text(
+              value,
+              style: theme.textTheme.titleMedium?.copyWith(
+                color: toneColor,
+                fontWeight: FontWeight.w700,
+              ),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+          if (detail != null && !isLoading) ...[
+            const SizedBox(height: 4),
+            Text(
+              detail!,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: scheme.onSurfaceVariant,
+              ),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ],
+        ],
       ),
     );
   }

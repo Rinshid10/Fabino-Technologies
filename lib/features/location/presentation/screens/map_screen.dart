@@ -175,8 +175,8 @@ class _LocationMap extends ConsumerWidget {
           ],
         ),
         Positioned(
-          right: 16,
-          bottom: 28,
+          right: 30,
+          bottom: 40,
           child: FloatingActionButton(
             heroTag: 'map-recenter',
             tooltip: 'Refresh and recenter',

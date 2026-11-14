@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 class DashboardGrid extends StatelessWidget {
   const DashboardGrid({
     required this.children,
-    this.minCardWidth = 168,
-    this.spacing = 12,
+    this.minCardWidth = 150,
+    this.spacing = 20,
     super.key,
   });
 

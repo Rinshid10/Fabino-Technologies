@@ -16,7 +16,7 @@ class DashboardScreen extends StatelessWidget {
       appBar: AppBar(title: const Text('Security dashboard')),
       body: const ContentWidth(
         child: SingleChildScrollView(
-          padding: EdgeInsets.all(16),
+          padding: EdgeInsets.all(20),
           child: DashboardGrid(
             children: [
               BiometricCard(),
