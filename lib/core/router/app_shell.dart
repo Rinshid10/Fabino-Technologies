@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:smart_access_security/core/theme/app_theme.dart';
 import 'package:smart_access_security/core/widgets/responsive.dart';
 
 /// One tab of the main navigation.
@@ -64,19 +65,43 @@ class AppShell extends StatelessWidget {
       );
     }
 
+    // A floating, fully rounded bar.
     return Scaffold(
       body: navigationShell,
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: index,
-        onDestinationSelected: _select,
-        destinations: [
-          for (final item in destinations)
-            NavigationDestination(
-              icon: Icon(item.icon),
-              selectedIcon: Icon(item.selectedIcon),
-              label: item.label,
+      bottomNavigationBar: SafeArea(
+        minimum: const EdgeInsets.fromLTRB(12, 0, 12, 10),
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(30),
+            boxShadow: [
+              BoxShadow(
+                color: context.depth.shadow,
+                offset: const Offset(0, 6),
+                blurRadius: 20,
+              ),
+            ],
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(30),
+            // The bar handles the bottom inset itself otherwise.
+            child: MediaQuery.removePadding(
+              context: context,
+              removeBottom: true,
+              child: NavigationBar(
+                selectedIndex: index,
+                onDestinationSelected: _select,
+                destinations: [
+                  for (final item in destinations)
+                    NavigationDestination(
+                      icon: Icon(item.icon),
+                      selectedIcon: Icon(item.selectedIcon),
+                      label: item.label,
+                    ),
+                ],
+              ),
             ),
-        ],
+          ),
+        ),
       ),
     );
   }

@@ -42,15 +42,15 @@ class DepthTheme extends ThemeExtension<DepthTheme> {
 /// Material 3 themes for the app: a quiet background, clean cards, one
 /// accent colour and no decoration beyond a soft shadow.
 abstract final class AppTheme {
-  static const _seed = Color(0xFF3D6DEB);
+  static const _seed = Color(0xFF2F6BFF);
 
-  static const _lightBackground = Color(0xFFF4F5F8);
+  static const _lightBackground = Color(0xFFF5F7FE);
   static const _darkBackground = Color(0xFF14161A);
 
   static const _lightDepth = DepthTheme(
     card: Color(0xFFFFFFFF),
-    pressed: Color(0xFFECEFF5),
-    shadow: Color(0x141B2A4A),
+    pressed: Color(0xFFEAF0FF),
+    shadow: Color(0x1A3A5BBF),
   );
   static const _darkDepth = DepthTheme(
     card: Color(0xFF1D2025),
@@ -78,6 +78,7 @@ abstract final class AppTheme {
         ).copyWith(
           primary: isLight ? _seed : const Color(0xFF8CA8FF),
           onPrimary: isLight ? Colors.white : const Color(0xFF0E1B3D),
+          error: isLight ? const Color(0xFFEF4444) : const Color(0xFFFF8A80),
           surface: background,
           surfaceContainerLowest: depth.card,
           surfaceContainerLow: depth.card,
@@ -110,7 +111,27 @@ abstract final class AppTheme {
         surfaceTintColor: Colors.transparent,
         elevation: 0,
         indicatorColor: scheme.primary.withValues(alpha: 0.12),
-        height: 68,
+        indicatorShape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(16)),
+        ),
+        height: 70,
+        // The selected tab is blue, the others grey.
+        iconTheme: WidgetStateProperty.resolveWith(
+          (states) => IconThemeData(
+            color: states.contains(WidgetState.selected)
+                ? scheme.primary
+                : scheme.onSurfaceVariant,
+          ),
+        ),
+        labelTextStyle: WidgetStateProperty.resolveWith(
+          (states) => TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
+            color: states.contains(WidgetState.selected)
+                ? scheme.primary
+                : scheme.onSurfaceVariant,
+          ),
+        ),
       ),
       navigationRailTheme: NavigationRailThemeData(
         backgroundColor: depth.card,
@@ -183,10 +204,10 @@ extension DepthContext on BuildContext {
 /// Semantic colours that are not part of [ColorScheme].
 extension StatusColors on ColorScheme {
   Color get success => brightness == Brightness.light
-      ? const Color(0xFF1B7F3B)
+      ? const Color(0xFF16A34A)
       : const Color(0xFF7BD992);
 
   Color get warning => brightness == Brightness.light
-      ? const Color(0xFF9A6200)
+      ? const Color(0xFFF08C00)
       : const Color(0xFFF2BE5C);
 }

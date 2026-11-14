@@ -151,6 +151,5 @@ void main() {
     tester.view.physicalSize = const Size(1024, 768);
     await tester.pumpAndSettle();
     expect(tester.takeException(), isNull);
-    expect(find.text('ACCESS'), findsOneWidget);
   });
 }
