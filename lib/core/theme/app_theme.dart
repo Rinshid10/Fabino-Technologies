@@ -53,7 +53,7 @@ abstract final class AppTheme {
   static const _lightDepth = DepthTheme(
     card: Color(0xFFFFFFFF),
     pressed: Color(0xFFEFF4FF),
-    shadow: Color(0x141B2A4A),
+    shadow: Color(0x0A000000),
   );
   static const _darkDepth = DepthTheme(
     card: Color(0xFF1D2025),
@@ -112,9 +112,9 @@ abstract final class AppTheme {
         titleTextStyle: TextStyle(
           color: scheme.onSurface,
           fontFamily: fontFamily,
-          fontSize: 22,
-          fontWeight: FontWeight.w700,
-          letterSpacing: -0.3,
+          fontSize: 17,
+          fontWeight: FontWeight.w600,
+          letterSpacing: -0.085,
         ),
       ),
       navigationRailTheme: NavigationRailThemeData(
@@ -123,26 +123,31 @@ abstract final class AppTheme {
       ),
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
-          minimumSize: const Size(64, 56),
+          minimumSize: const Size(64, 52),
           shape: buttonShape,
           elevation: 0,
           textStyle: const TextStyle(
             fontFamily: fontFamily,
-            fontSize: 16,
-            fontWeight: FontWeight.w700,
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+            letterSpacing: 0.14,
           ),
         ),
       ),
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
-          minimumSize: const Size(64, 56),
+          minimumSize: const Size(64, 52),
           shape: buttonShape,
-          backgroundColor: depth.pressed,
+          backgroundColor: depth.card,
+          foregroundColor: scheme.onSurface,
+          elevation: 2,
+          shadowColor: depth.shadow.withValues(alpha: 0.3),
           side: BorderSide.none,
           textStyle: const TextStyle(
             fontFamily: fontFamily,
-            fontSize: 16,
-            fontWeight: FontWeight.w700,
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+            letterSpacing: 0.14,
           ),
         ),
       ),
@@ -164,7 +169,7 @@ abstract final class AppTheme {
         surfaceTintColor: Colors.transparent,
         elevation: 2,
         shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(28)),
+          borderRadius: BorderRadius.all(Radius.circular(20)),
         ),
       ),
       popupMenuTheme: PopupMenuThemeData(
@@ -177,13 +182,11 @@ abstract final class AppTheme {
         filled: true,
         fillColor: depth.pressed,
         border: const OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(18)),
+          borderRadius: BorderRadius.all(Radius.circular(12)),
           borderSide: BorderSide.none,
         ),
       ),
-      dividerTheme: DividerThemeData(
-        color: scheme.outlineVariant.withValues(alpha: 0.5),
-      ),
+      dividerTheme: DividerThemeData(color: depth.pressed, thickness: 1),
       snackBarTheme: const SnackBarThemeData(
         behavior: SnackBarBehavior.floating,
         shape: menuShape,
@@ -207,6 +210,27 @@ extension StatusColors on ColorScheme {
   Color get success => brightness == Brightness.light
       ? const Color(0xFF006C49)
       : const Color(0xFF7BD992);
+
+  /// The darker blue used for small coloured text and links.
+  Color get primaryDeep =>
+      brightness == Brightness.light ? const Color(0xFF1853D1) : primary;
+
+  /// Grey for captions and inactive items.
+  Color get muted => brightness == Brightness.light
+      ? const Color(0xFF737686)
+      : onSurfaceVariant;
+
+  /// Background of a pill or icon circle in [tone].
+  Color pillFill(Color tone) {
+    if (brightness == Brightness.light) {
+      if (tone == success) return const Color(0x666CF8BB);
+      if (tone == error) return const Color(0xFFFFDAD6);
+      if (tone == primary || tone == primaryDeep) {
+        return const Color(0xFFE5EEFF);
+      }
+    }
+    return tone.withValues(alpha: 0.14);
+  }
 
   Color get warning => brightness == Brightness.light
       ? const Color(0xFF835200)

@@ -19,7 +19,7 @@ class LocationDetailsCard extends ConsumerWidget {
 
   final LocationFix fix;
 
-  /// Buttons shown in one row at the bottom of the card.
+  /// Buttons stacked at the bottom of the card.
   final List<Widget> actions;
 
   @override
@@ -34,56 +34,68 @@ class LocationDetailsCard extends ConsumerWidget {
     );
 
     return SoftSurface(
-      padding: const EdgeInsets.all(18),
+      radius: 24,
+      padding: const EdgeInsets.all(16),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisSize: MainAxisSize.min,
         children: [
           Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
-                child: CapsLabel('Current location', color: scheme.primary),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    CapsLabel('Current location', color: scheme.primaryDeep),
+                    Text(
+                      address.when(
+                        data: (value) => value ?? 'Address not available',
+                        loading: () => 'Looking up address…',
+                        error: (_, _) => 'Address not available',
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontSize: 17,
+                        height: 22 / 17,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: -0.085,
+                      ),
+                    ),
+                    Text(
+                      '${Formatters.accuracy(fix.accuracy)} · '
+                      'Updated ${Formatters.dateTime(fix.timestamp)}',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: scheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
+                ),
               ),
+              const SizedBox(width: 8),
               AccuracyChip(level: fix.accuracyLevel),
             ],
           ),
-          const SizedBox(height: 6),
-          Text(
-            address.when(
-              data: (value) => value ?? 'Address not available',
-              loading: () => 'Looking up address…',
-              error: (_, _) => 'Address not available',
-            ),
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            style: theme.textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-          const SizedBox(height: 2),
-          Text(
-            '${Formatters.accuracy(fix.accuracy)} · '
-            'Updated ${Formatters.dateTime(fix.timestamp)}',
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: scheme.onSurfaceVariant,
-            ),
-          ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 8),
           InsetPanel(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+            padding: const EdgeInsets.all(8),
             child: Row(
               children: [
                 Expanded(
                   child: _Field(
+                    icon: Icons.swap_vert,
                     label: 'Latitude',
                     value: Formatters.coordinate(fix.latitude),
                   ),
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: 8),
                 Expanded(
                   child: _Field(
+                    icon: Icons.swap_horiz,
                     label: 'Longitude',
                     value: Formatters.coordinate(fix.longitude),
                   ),
@@ -91,16 +103,9 @@ class LocationDetailsCard extends ConsumerWidget {
               ],
             ),
           ),
-          if (actions.isNotEmpty) ...[
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                for (final (index, action) in actions.indexed) ...[
-                  if (index > 0) const SizedBox(width: 10),
-                  Expanded(child: action),
-                ],
-              ],
-            ),
+          for (final action in actions) ...[
+            const SizedBox(height: 8),
+            action,
           ],
         ],
       ),
@@ -130,29 +135,58 @@ class AccuracyChip extends StatelessWidget {
 }
 
 class _Field extends StatelessWidget {
-  const _Field({required this.label, required this.value});
+  const _Field({required this.icon, required this.label, required this.value});
 
+  final IconData icon;
   final String label;
   final String value;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
+    final scheme = theme.colorScheme;
+    return Row(
       children: [
-        CapsLabel(label),
-        const SizedBox(height: 2),
-        FittedBox(
-          fit: BoxFit.scaleDown,
-          alignment: Alignment.centerLeft,
-          child: Text(
-            value,
-            style: theme.textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.w700,
-              fontFeatures: const [FontFeature.tabularFigures()],
-            ),
+        Container(
+          width: 28,
+          height: 28,
+          decoration: BoxDecoration(
+            color: context.depth.card,
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Icon(icon, size: 15, color: scheme.primaryDeep),
+        ),
+        const SizedBox(width: 8),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                label.toUpperCase(),
+                style: theme.textTheme.labelSmall?.copyWith(
+                  color: scheme.onSurfaceVariant,
+                  fontSize: 10,
+                  height: 1.5,
+                  fontWeight: FontWeight.w400,
+                  letterSpacing: 0.5,
+                ),
+              ),
+              FittedBox(
+                fit: BoxFit.scaleDown,
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  value,
+                  style: theme.textTheme.labelMedium?.copyWith(
+                    fontSize: 12,
+                    height: 16 / 12,
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: 0.24,
+                    fontFeatures: const [FontFeature.tabularFigures()],
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ],

@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:smart_access_security/core/theme/app_theme.dart';
-import 'package:smart_access_security/core/widgets/soft_surface.dart';
 
 /// Numeric keypad: digits 1-9, then [action] (optional), 0 and backspace.
-/// Every key is a round button that shrinks slightly when pressed.
+/// Every key is a 72 px circle.
 class PinPad extends StatelessWidget {
   const PinPad({
     required this.onDigit,
@@ -19,6 +18,9 @@ class PinPad extends StatelessWidget {
   /// Extra key shown bottom-left, for example a [PinPadActionKey].
   final Widget? action;
   final bool enabled;
+
+  static const _keySize = 72.0;
+  static const _rowGap = 16.0;
 
   static const _rows = [
     ['1', '2', '3'],
@@ -46,12 +48,14 @@ class PinPad extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          for (final row in _rows)
-            Row(children: [for (final digit in row) _digitKey(context, digit)]),
+          for (final row in _rows) ...[
+            Row(children: [for (final digit in row) _digitKey(digit)]),
+            const SizedBox(height: _rowGap),
+          ],
           Row(
             children: [
               _PadSlot(child: action),
-              _digitKey(context, '0'),
+              _digitKey('0'),
               _PadSlot(
                 child: PinPadActionKey(
                   icon: Icons.backspace_outlined,
@@ -66,41 +70,79 @@ class PinPad extends StatelessWidget {
     );
   }
 
-  Widget _digitKey(BuildContext context, String digit) {
-    final theme = Theme.of(context);
-    final letters = _letters[digit];
+  Widget _digitKey(String digit) {
     return _PadSlot(
-      child: SoftPressable(
+      child: _DigitKey(
         key: ValueKey('pin-key-$digit'),
-        isCircle: true,
-        fadeWhenDisabled: true,
-        semanticLabel: digit,
+        digit: digit,
+        letters: _letters[digit],
         onTap: enabled ? () => onDigit(digit) : null,
-        child: FittedBox(
-          fit: BoxFit.scaleDown,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                digit,
-                style: theme.textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.w700,
-                  height: 1.1,
-                ),
-              ),
-              if (letters != null)
-                ExcludeSemantics(
-                  child: Text(
-                    letters,
-                    style: theme.textTheme.labelSmall?.copyWith(
-                      color: theme.colorScheme.onSurfaceVariant,
-                      fontSize: 10,
-                      fontWeight: FontWeight.w600,
-                      letterSpacing: 1,
-                    ),
+      ),
+    );
+  }
+}
+
+/// A white round key with a digit and, under it, its letters.
+class _DigitKey extends StatelessWidget {
+  const _DigitKey({
+    required this.digit,
+    required this.letters,
+    required this.onTap,
+    super.key,
+  });
+
+  final String digit;
+  final String? letters;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    final letters = this.letters;
+
+    return Semantics(
+      button: true,
+      enabled: onTap != null,
+      label: digit,
+      excludeSemantics: true,
+      child: AnimatedOpacity(
+        duration: const Duration(milliseconds: 180),
+        opacity: onTap == null ? 0.45 : 1,
+        child: Material(
+          color: context.depth.card,
+          shape: const CircleBorder(),
+          elevation: 1,
+          shadowColor: const Color(0x33000000),
+          clipBehavior: Clip.antiAlias,
+          child: InkWell(
+            onTap: onTap,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  digit,
+                  style: theme.textTheme.titleLarge?.copyWith(
+                    fontSize: 20,
+                    height: 1,
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: -0.2,
                   ),
                 ),
-            ],
+                const SizedBox(height: 2),
+                // An empty line keeps "1" level with the other digits.
+                Text(
+                  letters ?? '',
+                  style: theme.textTheme.labelSmall?.copyWith(
+                    color: scheme.muted,
+                    fontSize: 11,
+                    height: 14 / 11,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 0.55,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -137,7 +179,7 @@ class PinPadActionKey extends StatelessWidget {
     final color = onPressed == null
         ? scheme.onSurface.withValues(alpha: 0.3)
         : isAccent
-        ? scheme.primary
+        ? scheme.primaryDeep
         : scheme.onSurface;
 
     return Tooltip(
@@ -152,23 +194,27 @@ class PinPadActionKey extends StatelessWidget {
           clipBehavior: Clip.antiAlias,
           child: InkWell(
             onTap: onPressed,
-            child: FittedBox(
-              fit: BoxFit.scaleDown,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(icon, size: 26, color: color),
-                  if (label != null)
-                    Text(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(icon, size: 20, color: color),
+                if (label != null) ...[
+                  const SizedBox(height: 2),
+                  FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
                       label,
                       style: theme.textTheme.labelSmall?.copyWith(
                         color: color,
-                        fontSize: 10,
+                        fontSize: 11,
+                        height: 14 / 11,
                         fontWeight: FontWeight.w700,
+                        letterSpacing: 0.44,
                       ),
                     ),
+                  ),
                 ],
-              ),
+              ],
             ),
           ),
         ),
@@ -177,7 +223,7 @@ class PinPadActionKey extends StatelessWidget {
   }
 }
 
-/// One equally sized square cell of the keypad.
+/// One cell of the keypad, holding a centred 72 px key.
 class _PadSlot extends StatelessWidget {
   const _PadSlot({this.child});
 
@@ -186,12 +232,8 @@ class _PadSlot extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: AspectRatio(
-        aspectRatio: 1,
-        child: Padding(
-          padding: const EdgeInsets.all(9),
-          child: child == null ? null : SizedBox.expand(child: child),
-        ),
+      child: Center(
+        child: SizedBox.square(dimension: PinPad._keySize, child: child),
       ),
     );
   }

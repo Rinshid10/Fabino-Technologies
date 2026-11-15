@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smart_access_security/core/theme/app_theme.dart';
 import 'package:smart_access_security/core/widgets/pills.dart';
 
 /// A labelled number, such as "Distance 1.24 km".
@@ -32,19 +33,21 @@ class StatTile extends StatelessWidget {
           children: [
             Icon(
               icon,
-              size: 15,
-              color: isAccent ? scheme.primary : scheme.onSurfaceVariant,
+              size: 12,
+              color: isAccent ? scheme.primaryDeep : scheme.onSurfaceVariant,
             ),
-            const SizedBox(width: 5),
+            const SizedBox(width: 4),
             Flexible(child: CapsLabel(label)),
           ],
         ),
         const SizedBox(height: 4),
         DefaultTextStyle.merge(
           style: theme.textTheme.titleLarge?.copyWith(
-            color: isAccent ? scheme.primary : null,
-            fontWeight: FontWeight.w800,
-            letterSpacing: -0.4,
+            color: isAccent ? scheme.primaryDeep : null,
+            fontSize: 22,
+            height: 27 / 22,
+            fontWeight: FontWeight.w700,
+            letterSpacing: -0.55,
             fontFeatures: const [FontFeature.tabularFigures()],
           ),
           child: FittedBox(
@@ -74,6 +77,39 @@ class StatRow extends StatelessWidget {
           Expanded(child: tile),
         ],
       ],
+    );
+  }
+}
+
+/// A number with its unit in small grey letters, such as "8.42 km".
+///
+/// [text] is split at its last space; without one it is shown as is.
+class StatValue extends StatelessWidget {
+  const StatValue(this.text, {super.key});
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final split = text.lastIndexOf(' ');
+    if (split < 0) return Text(text);
+
+    return Text.rich(
+      TextSpan(
+        text: text.substring(0, split),
+        children: [
+          TextSpan(
+            text: text.substring(split),
+            style: theme.textTheme.labelMedium?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+              letterSpacing: 0.24,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

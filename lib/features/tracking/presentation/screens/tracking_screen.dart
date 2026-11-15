@@ -160,7 +160,7 @@ class _ControlPanel extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(20, 4, 20, 12),
       child: SoftSurface(
         child: Padding(
-          padding: const EdgeInsets.all(18),
+          padding: const EdgeInsets.all(16),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -171,7 +171,9 @@ class _ControlPanel extends StatelessWidget {
                     child: Text(
                       session == null ? 'Ready to track' : 'Active session',
                       style: theme.textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w700,
+                        fontSize: 17,
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: -0.085,
                       ),
                     ),
                   ),
@@ -204,6 +206,8 @@ class _ControlPanel extends StatelessWidget {
                   icon: const Icon(Icons.stop_circle_outlined),
                   label: const Text('Stop tracking'),
                 ),
+                const SizedBox(height: 8),
+                const _OfflineNote(),
               ] else ...[
                 Text(
                   'Record your route, distance and speed. Tracking keeps '
@@ -225,6 +229,37 @@ class _ControlPanel extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+/// Small print under the stop button: where the route is kept.
+class _OfflineNote extends StatelessWidget {
+  const _OfflineNote();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final color = theme.colorScheme.onSurfaceVariant;
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(Icons.cloud_off_outlined, size: 14, color: color),
+        const SizedBox(width: 6),
+        Flexible(
+          child: Text(
+            'Stored locally on this device · 100% offline',
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: theme.textTheme.labelSmall?.copyWith(
+              color: color,
+              fontSize: 11,
+              fontWeight: FontWeight.w700,
+              letterSpacing: 0.44,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

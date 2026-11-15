@@ -38,20 +38,22 @@ class SecurityOverviewCard extends ConsumerWidget {
     final tone = isAllSet ? scheme.success : scheme.warning;
 
     return SoftSurface(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
           Row(
             children: [
-              Flexible(
-                child: StatusPill(
-                  label: isAllSet ? 'All systems secure' : 'Needs attention',
-                  color: tone,
+              Expanded(
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: StatusPill(
+                    label: isAllSet ? 'All systems secure' : 'Needs attention',
+                    color: tone,
+                  ),
                 ),
               ),
-              const Spacer(),
               SoftIconWell(
                 icon: isAllSet
                     ? Icons.verified_user_outlined
@@ -63,12 +65,14 @@ class SecurityOverviewCard extends ConsumerWidget {
           const SizedBox(height: 12),
           Text(
             isAllSet ? 'You are all set' : 'Finish setting up',
-            style: theme.textTheme.headlineSmall?.copyWith(
-              fontWeight: FontWeight.w700,
-              letterSpacing: -0.5,
+            style: theme.textTheme.titleLarge?.copyWith(
+              fontSize: 20,
+              height: 1.3,
+              fontWeight: FontWeight.w600,
+              letterSpacing: -0.2,
             ),
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: 2),
           Text(
             isAllSet
                 ? 'App lock, location and GPS are ready.'
@@ -83,8 +87,8 @@ class SecurityOverviewCard extends ConsumerWidget {
               children: [
                 Icon(
                   isTracking ? Icons.route_outlined : Icons.lock_clock_outlined,
-                  size: 20,
-                  color: scheme.primary,
+                  size: 17,
+                  color: scheme.primaryDeep,
                 ),
                 const SizedBox(width: 10),
                 Expanded(
@@ -94,8 +98,10 @@ class SecurityOverviewCard extends ConsumerWidget {
                         : lastAuth == null
                         ? 'Not unlocked yet'
                         : 'Unlocked ${Formatters.dateTime(lastAuth)}',
-                    style: theme.textTheme.labelLarge?.copyWith(
+                    style: theme.textTheme.labelMedium?.copyWith(
+                      fontSize: 12,
                       fontWeight: FontWeight.w600,
+                      letterSpacing: 0.24,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,

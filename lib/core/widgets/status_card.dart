@@ -75,7 +75,9 @@ class StatusCard extends StatelessWidget {
         ? Text(
             title,
             style: theme.textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.w700,
+              fontSize: 15,
+              fontWeight: FontWeight.w600,
+              letterSpacing: -0.085,
             ),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
@@ -95,8 +97,10 @@ class StatusCard extends StatelessWidget {
         : Text(
             value,
             style: theme.textTheme.titleMedium?.copyWith(
-              color: toneColor,
-              fontWeight: FontWeight.w700,
+              color: layout == StatusCardLayout.tile ? null : toneColor,
+              fontSize: layout == StatusCardLayout.tile ? 17 : 13,
+              fontWeight: FontWeight.w600,
+              letterSpacing: -0.085,
             ),
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
@@ -105,9 +109,18 @@ class StatusCard extends StatelessWidget {
         ? null
         : Text(
             detail,
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: scheme.onSurfaceVariant,
-            ),
+            style: layout == StatusCardLayout.tile
+                ? theme.textTheme.labelSmall?.copyWith(
+                    color: toneColor == scheme.primary
+                        ? scheme.success
+                        : toneColor,
+                    fontSize: 11,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 0.44,
+                  )
+                : theme.textTheme.bodySmall?.copyWith(
+                    color: scheme.onSurfaceVariant,
+                  ),
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
           );
@@ -119,11 +132,11 @@ class StatusCard extends StatelessWidget {
       StatusCardLayout.row => InkWell(
         onTap: onTap,
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(18, 14, 14, 14),
+          padding: const EdgeInsets.fromLTRB(16, 12, 12, 12),
           child: Row(
             children: [
-              SoftIconWell(icon: icon, color: toneColor, size: 48),
-              const SizedBox(width: 14),
+              SoftIconWell(icon: icon, color: toneColor),
+              const SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -150,21 +163,21 @@ class StatusCard extends StatelessWidget {
       StatusCardLayout.tile => SoftPressable(
         onTap: onTap,
         semanticLabel: title,
-        padding: const EdgeInsets.all(18),
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
             Row(
               children: [
-                SoftIconWell(icon: icon, color: toneColor, size: 42),
+                SoftIconWell(icon: icon, color: toneColor, size: 32),
                 const Spacer(),
                 ?chevron,
               ],
             ),
-            const SizedBox(height: 14),
+            const SizedBox(height: 8),
             titleText,
-            const SizedBox(height: 4),
+            const SizedBox(height: 2),
             valueText,
             if (detailText != null) ...[
               const SizedBox(height: 4),

@@ -7,7 +7,7 @@ import 'package:smart_access_security/core/theme/app_theme.dart';
 class SoftSurface extends StatelessWidget {
   const SoftSurface({
     required this.child,
-    this.radius = 28,
+    this.radius = 20,
     this.isPressed = false,
     this.isCircle = false,
     this.padding,
@@ -38,7 +38,7 @@ class SoftSurface extends StatelessWidget {
           BoxShadow(
             color: isPressed ? Colors.transparent : colors.shadow,
             offset: const Offset(0, 4),
-            blurRadius: 24,
+            blurRadius: 10,
           ),
         ],
       ),
@@ -55,7 +55,7 @@ class SoftPressable extends StatefulWidget {
   const SoftPressable({
     required this.child,
     this.onTap,
-    this.radius = 28,
+    this.radius = 20,
     this.isCircle = false,
     this.padding,
     this.fadeWhenDisabled = false,
@@ -122,7 +122,7 @@ class _SoftPressableState extends State<SoftPressable> {
   }
 }
 
-/// An icon on a flat, lightly tinted circle.
+/// An icon on a flat circle in the inset colour, or in a tint of [color].
 class SoftIconWell extends StatelessWidget {
   const SoftIconWell({
     required this.icon,
@@ -139,15 +139,25 @@ class SoftIconWell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tone = color ?? Theme.of(context).colorScheme.primary;
+    final scheme = Theme.of(context).colorScheme;
+    final tone = color;
     return Container(
       width: size,
       height: size,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: tone.withValues(alpha: 0.1),
+        // Without a colour the circle is the neutral inset tone.
+        color: tone == null || tone == scheme.primary
+            ? context.depth.pressed
+            : scheme.pillFill(tone),
       ),
-      child: Icon(icon, size: size * 0.5, color: tone),
+      child: Icon(
+        icon,
+        size: size * 0.48,
+        color: tone == null || tone == scheme.primary
+            ? scheme.primaryDeep
+            : tone,
+      ),
     );
   }
 }

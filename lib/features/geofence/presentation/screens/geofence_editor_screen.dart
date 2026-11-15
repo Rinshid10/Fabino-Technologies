@@ -12,7 +12,6 @@ import 'package:smart_access_security/core/utils/clock.dart';
 import 'package:smart_access_security/core/utils/formatters.dart';
 import 'package:smart_access_security/core/widgets/app_map.dart';
 import 'package:smart_access_security/core/widgets/async_value_view.dart';
-import 'package:smart_access_security/core/widgets/pills.dart';
 import 'package:smart_access_security/core/widgets/responsive.dart';
 import 'package:smart_access_security/core/widgets/soft_surface.dart';
 import 'package:smart_access_security/core/widgets/state_views.dart';
@@ -177,7 +176,7 @@ class _GeofenceFormState extends ConsumerState<_GeofenceForm> {
       child: Padding(
         padding: const EdgeInsets.fromLTRB(20, 4, 20, 12),
         child: SoftSurface(
-          padding: const EdgeInsets.all(18),
+          padding: const EdgeInsets.all(16),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -202,14 +201,30 @@ class _GeofenceFormState extends ConsumerState<_GeofenceForm> {
                     child: Text(
                       'Fence radius',
                       style: theme.textTheme.titleSmall?.copyWith(
-                        fontWeight: FontWeight.w700,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: 0.14,
                       ),
                     ),
                   ),
-                  StatusPill(
-                    label: Formatters.distance(_radius),
-                    showDot: false,
-                    uppercase: false,
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 4,
+                    ),
+                    decoration: ShapeDecoration(
+                      shape: const StadiumBorder(),
+                      color: theme.colorScheme.primary,
+                    ),
+                    child: Text(
+                      Formatters.distance(_radius),
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        color: theme.colorScheme.onPrimary,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: -0.085,
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -316,7 +331,7 @@ class _RadiusPreset extends StatelessWidget {
         onTap: onTap,
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 180),
-          padding: const EdgeInsets.symmetric(vertical: 9),
+          padding: const EdgeInsets.symmetric(vertical: 6),
           alignment: Alignment.center,
           decoration: ShapeDecoration(
             shape: const StadiumBorder(),
@@ -326,7 +341,9 @@ class _RadiusPreset extends StatelessWidget {
             label,
             maxLines: 1,
             style: theme.textTheme.labelMedium?.copyWith(
-              fontWeight: FontWeight.w700,
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+              letterSpacing: 0.24,
               color: isSelected ? scheme.onPrimary : scheme.onSurface,
             ),
           ),

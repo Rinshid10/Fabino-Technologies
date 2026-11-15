@@ -53,7 +53,7 @@ class TrackingHistoryScreen extends ConsumerWidget {
                     }
                     final session = sessions[index - 2];
                     return Padding(
-                      padding: _gutter.add(const EdgeInsets.only(bottom: 14)),
+                      padding: _gutter.add(const EdgeInsets.only(bottom: 8)),
                       child: SessionCard(
                         session: session,
                         onTap: () =>

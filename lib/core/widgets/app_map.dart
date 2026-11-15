@@ -73,7 +73,8 @@ class AppMap extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 8, 20, 12),
       child: SoftSurface(
-        child: ClipRRect(borderRadius: BorderRadius.circular(28), child: map),
+        radius: 24,
+        child: ClipRRect(borderRadius: BorderRadius.circular(24), child: map),
       ),
     );
   }

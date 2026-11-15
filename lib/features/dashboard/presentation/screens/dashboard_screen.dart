@@ -53,7 +53,7 @@ class DashboardScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Expanded(child: TrackingCard()),
-                    SizedBox(width: 14),
+                    SizedBox(width: 8),
                     Expanded(child: GeofenceCard()),
                   ],
                 ),
@@ -83,7 +83,7 @@ class _StatusGroup extends StatelessWidget {
         title: title,
         children: [
           for (final (index, child) in children.indexed) ...[
-            if (index > 0) const Divider(height: 1, indent: 18, endIndent: 18),
+            if (index > 0) const Divider(height: 1, indent: 16, endIndent: 16),
             child,
           ],
         ],
@@ -107,12 +107,12 @@ class _QuickActions extends ConsumerWidget {
             label: const Text('History'),
           ),
         ),
-        const SizedBox(width: 14),
+        const SizedBox(width: 8),
         Expanded(
           child: FilledButton.icon(
             onPressed: ref.read(appLockProvider.notifier).lock,
             icon: const Icon(Icons.lock_outline),
-            label: const Text('Lock now'),
+            label: const Text('Lock app now'),
           ),
         ),
       ],

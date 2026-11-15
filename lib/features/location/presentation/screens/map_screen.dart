@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:smart_access_security/core/router/routes.dart';
+import 'package:smart_access_security/core/theme/app_theme.dart';
 import 'package:smart_access_security/core/widgets/app_map.dart';
 import 'package:smart_access_security/core/widgets/async_value_view.dart';
 import 'package:smart_access_security/core/widgets/brand_title.dart';
@@ -106,12 +107,23 @@ class _CurrentLocationViewState extends ConsumerState<_CurrentLocationView> {
               FilledButton.icon(
                 onPressed: () => context.go(Routes.tracking),
                 icon: const Icon(Icons.play_arrow_rounded),
-                label: const Text('Track'),
+                label: const Text('Start tracking from here'),
               ),
-              OutlinedButton.icon(
+              TextButton.icon(
+                style: TextButton.styleFrom(
+                  minimumSize: const Size(64, 44),
+                  backgroundColor: context.depth.pressed,
+                  foregroundColor: Theme.of(context).colorScheme.onSurface,
+                  textStyle: const TextStyle(
+                    fontFamily: AppTheme.fontFamily,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: 0.24,
+                  ),
+                ),
                 onPressed: () => context.push(Routes.newGeofence),
-                icon: const Icon(Icons.radar_outlined),
-                label: const Text('Geofence'),
+                icon: const Icon(Icons.radar_outlined, size: 16),
+                label: const Text('Create geofence here'),
               ),
             ],
           ),
@@ -185,7 +197,7 @@ class _LocationMap extends ConsumerWidget {
         ),
         Positioned(
           right: 32,
-          top: 24,
+          top: 20,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -195,7 +207,7 @@ class _LocationMap extends ConsumerWidget {
                 color: scheme.primary,
                 onPressed: isRefreshing ? null : onRefresh,
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 8),
               RoundIconButton(
                 icon: showPastRoutes ? Icons.timeline : Icons.timeline_outlined,
                 tooltip: showPastRoutes

@@ -27,13 +27,15 @@ class SessionStats extends StatelessWidget {
         StatTile(
           icon: Icons.straighten,
           label: 'Distance',
-          value: Text(Formatters.distance(session.distanceMeters)),
+          value: StatValue(Formatters.distance(session.distanceMeters)),
         ),
         StatTile(
           icon: Icons.speed,
           label: isLive ? 'Speed' : 'Avg speed',
           isAccent: true,
-          value: Text(Formatters.speed(liveSpeed ?? session.averageSpeed)),
+          value: StatValue(
+            Formatters.speed(liveSpeed ?? session.averageSpeed),
+          ),
         ),
         StatTile(
           icon: Icons.timer_outlined,

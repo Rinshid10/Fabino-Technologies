@@ -49,23 +49,25 @@ class _LocationPermissionScreenState
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.all(24),
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 480),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   const _Hero(),
-                  const SizedBox(height: 22),
+                  const SizedBox(height: 16),
                   Text(
                     'Allow location access',
                     style: theme.textTheme.headlineSmall?.copyWith(
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: -0.6,
+                      fontSize: 26,
+                      height: 32 / 26,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: -0.65,
                     ),
                     textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 6),
+                  const SizedBox(height: 4),
                   Text(
                     'Your location is used on this device only. Nothing is '
                     'uploaded.',
@@ -110,6 +112,9 @@ class _LocationPermissionScreenState
                     ),
                   ] else
                     FilledButton.icon(
+                      style: FilledButton.styleFrom(
+                        backgroundColor: theme.colorScheme.primaryDeep,
+                      ),
                       onPressed: _isRequesting ? null : _request,
                       icon: const Icon(Icons.location_on_outlined),
                       label: const Text('Allow location access'),
@@ -140,14 +145,14 @@ class _Reason extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6),
+      padding: const EdgeInsets.symmetric(vertical: 4),
       child: SoftSurface(
-        radius: 22,
+        radius: 12,
         padding: const EdgeInsets.all(14),
         child: Row(
           children: [
-            SoftIconWell(icon: icon, size: 44),
-            const SizedBox(width: 14),
+            SoftIconWell(icon: icon),
+            const SizedBox(width: 8),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -156,7 +161,9 @@ class _Reason extends StatelessWidget {
                   Text(
                     title,
                     style: theme.textTheme.titleSmall?.copyWith(
-                      fontWeight: FontWeight.w700,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: 0.14,
                     ),
                   ),
                   const SizedBox(height: 2),
@@ -198,28 +205,41 @@ class _Hero extends StatelessWidget {
     }
 
     return SoftSurface(
-      padding: const EdgeInsets.symmetric(vertical: 22),
+      radius: 12,
+      padding: const EdgeInsets.all(20),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           ring(
-            132,
-            0.07,
+            176,
+            0.05,
             child: ring(
-              100,
+              152,
               0.1,
               child: Container(
-                width: 68,
-                height: 68,
+                width: 80,
+                height: 80,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: scheme.primary,
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [scheme.primary, scheme.primaryDeep],
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: scheme.primaryDeep.withValues(alpha: 0.25),
+                      blurRadius: 15,
+                      offset: const Offset(0, 10),
+                      spreadRadius: -3,
+                    ),
+                  ],
                 ),
-                child: Icon(Icons.shield, size: 32, color: scheme.onPrimary),
+                child: Icon(Icons.shield, size: 30, color: scheme.onPrimary),
               ),
             ),
           ),
-          const SizedBox(height: 14),
+          const SizedBox(height: 8),
           StatusPill(label: 'Works 100% offline', color: scheme.success),
         ],
       ),

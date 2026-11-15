@@ -31,9 +31,9 @@ class FloatingNavBar extends StatelessWidget {
   final int selectedIndex;
   final ValueChanged<int> onSelected;
 
-  static const _height = 70.0;
-  static const _indicatorSize = Size(84, 54);
-  static const _indicatorTop = 8.0;
+  static const _height = 56.0;
+  static const _indicatorSize = Size(76, 44);
+  static const _indicatorTop = 6.0;
   static const _duration = Duration(milliseconds: 280);
 
   @override
@@ -45,19 +45,16 @@ class FloatingNavBar extends StatelessWidget {
       maxScaleFactor: 1.2,
       child: SafeArea(
         top: false,
-        minimum: const EdgeInsets.fromLTRB(16, 4, 16, 12),
+        minimum: const EdgeInsets.fromLTRB(20, 4, 20, 16),
         child: DecoratedBox(
           decoration: BoxDecoration(
             color: depth.card,
             borderRadius: BorderRadius.circular(_height / 2),
-            border: Border.all(
-              color: scheme.outlineVariant.withValues(alpha: 0.35),
-            ),
-            boxShadow: [
+            boxShadow: const [
               BoxShadow(
-                color: depth.shadow,
-                blurRadius: 24,
-                offset: const Offset(0, 8),
+                color: Color(0x14000000),
+                blurRadius: 15,
+                offset: Offset(0, 10),
               ),
             ],
           ),
@@ -84,12 +81,12 @@ class FloatingNavBar extends StatelessWidget {
                       child: DecoratedBox(
                         decoration: BoxDecoration(
                           color: scheme.primary,
-                          borderRadius: BorderRadius.circular(27),
+                          borderRadius: BorderRadius.circular(22),
                           boxShadow: [
                             BoxShadow(
-                              color: scheme.primary.withValues(alpha: 0.3),
-                              blurRadius: 10,
-                              offset: const Offset(0, 4),
+                              color: scheme.primary.withValues(alpha: 0.25),
+                              blurRadius: 6,
+                              offset: const Offset(0, 3),
                             ),
                           ],
                         ),
@@ -148,18 +145,16 @@ class _NavItem extends StatelessWidget {
         onTap: onTap,
         child: Column(
           children: [
-            const SizedBox(height: FloatingNavBar._indicatorTop + 6),
+            const SizedBox(height: FloatingNavBar._indicatorTop + 5),
             SizedBox(
-              height: 24,
+              height: 20,
               child: AnimatedSwitcher(
                 duration: FloatingNavBar._duration,
                 child: Icon(
                   isSelected ? item.selectedIcon : item.icon,
                   key: ValueKey(isSelected),
-                  size: 22,
-                  color: isSelected
-                      ? scheme.onPrimary
-                      : scheme.onSurfaceVariant,
+                  size: 20,
+                  color: isSelected ? scheme.onPrimary : scheme.muted,
                 ),
               ),
             ),
@@ -170,14 +165,11 @@ class _NavItem extends StatelessWidget {
                 duration: FloatingNavBar._duration,
                 style: (theme.textTheme.labelSmall ?? const TextStyle())
                     .copyWith(
-                      fontSize: 11,
+                      fontSize: 10,
+                      height: 1.5,
                       letterSpacing: 0,
-                      fontWeight: isSelected
-                          ? FontWeight.w700
-                          : FontWeight.w500,
-                      color: isSelected
-                          ? scheme.onPrimary
-                          : scheme.onSurfaceVariant,
+                      fontWeight: FontWeight.w400,
+                      color: isSelected ? scheme.onPrimary : scheme.muted,
                     ),
                 child: Text(
                   item.label,

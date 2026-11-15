@@ -14,16 +14,17 @@ class SectionHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Padding(
-      padding: const EdgeInsets.fromLTRB(24, 28, 24, 12),
+      padding: const EdgeInsets.fromLTRB(24, 20, 24, 6),
       child: Row(
         children: [
           Expanded(
             child: Text(
               title.toUpperCase(),
-              style: theme.textTheme.labelMedium?.copyWith(
+              style: theme.textTheme.labelSmall?.copyWith(
                 color: theme.colorScheme.onSurfaceVariant,
+                fontSize: 11,
                 fontWeight: FontWeight.w700,
-                letterSpacing: 1,
+                letterSpacing: 0.55,
               ),
             ),
           ),
@@ -56,7 +57,7 @@ class SoftPanel extends StatelessWidget {
       padding: margin,
       child: SoftSurface(
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(28),
+          borderRadius: BorderRadius.circular(20),
           child: Material(
             type: MaterialType.transparency,
             child: Padding(padding: padding, child: child),

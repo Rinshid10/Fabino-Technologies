@@ -9,6 +9,7 @@ class StatusPill extends StatelessWidget {
     this.icon,
     this.showDot = true,
     this.uppercase = true,
+    this.maxLines = 1,
     super.key,
   });
 
@@ -22,42 +23,46 @@ class StatusPill extends StatelessWidget {
   final bool showDot;
   final bool uppercase;
 
+  /// More than one lets a long message wrap instead of being cut off.
+  final int maxLines;
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final tone = color ?? theme.colorScheme.primary;
+    final tone = color ?? theme.colorScheme.primaryDeep;
     final icon = this.icon;
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: ShapeDecoration(
         shape: const StadiumBorder(),
-        color: tone.withValues(alpha: 0.13),
+        color: theme.colorScheme.pillFill(tone),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           if (icon != null) ...[
-            Icon(icon, size: 14, color: tone),
-            const SizedBox(width: 6),
+            Icon(icon, size: 13, color: tone),
+            const SizedBox(width: 5),
           ] else if (showDot) ...[
             Container(
-              width: 7,
-              height: 7,
+              width: 8,
+              height: 8,
               decoration: BoxDecoration(shape: BoxShape.circle, color: tone),
             ),
-            const SizedBox(width: 7),
+            const SizedBox(width: 6),
           ],
           Flexible(
             child: Text(
               uppercase ? label.toUpperCase() : label,
-              maxLines: 1,
+              maxLines: maxLines,
               overflow: TextOverflow.ellipsis,
               style: theme.textTheme.labelSmall?.copyWith(
                 color: tone,
                 fontSize: 11,
+                height: 14 / 11,
                 fontWeight: FontWeight.w700,
-                letterSpacing: uppercase ? 0.6 : 0.1,
+                letterSpacing: uppercase ? 0.55 : 0.44,
               ),
             ),
           ),
@@ -71,8 +76,8 @@ class StatusPill extends StatelessWidget {
 class InsetPanel extends StatelessWidget {
   const InsetPanel({
     required this.child,
-    this.padding = const EdgeInsets.all(14),
-    this.radius = 18,
+    this.padding = const EdgeInsets.all(12),
+    this.radius = 12,
     super.key,
   });
 
@@ -100,7 +105,7 @@ class RoundIconButton extends StatelessWidget {
     required this.tooltip,
     required this.onPressed,
     this.color,
-    this.size = 46,
+    this.size = 40,
     this.isFlat = false,
     super.key,
   });
@@ -168,8 +173,9 @@ class CapsLabel extends StatelessWidget {
       style: theme.textTheme.labelSmall?.copyWith(
         color: color ?? theme.colorScheme.onSurfaceVariant,
         fontSize: 11,
+        height: 14 / 11,
         fontWeight: FontWeight.w700,
-        letterSpacing: 0.8,
+        letterSpacing: 0.55,
       ),
     );
   }

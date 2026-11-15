@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:smart_access_security/core/constants/app_constants.dart';
+import 'package:smart_access_security/core/theme/app_theme.dart';
 import 'package:smart_access_security/core/widgets/pills.dart';
-import 'package:smart_access_security/core/widgets/soft_surface.dart';
+
 import 'package:smart_access_security/features/auth/presentation/widgets/lockout_countdown.dart';
 import 'package:smart_access_security/features/auth/presentation/widgets/pin_dots.dart';
 import 'package:smart_access_security/features/auth/presentation/widgets/pin_pad.dart';
@@ -89,7 +90,7 @@ class _PinEntryViewState extends State<PinEntryView> {
     return SafeArea(
       child: Center(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -97,27 +98,30 @@ class _PinEntryViewState extends State<PinEntryView> {
                 widget.header!,
                 const SizedBox(height: 24),
               ],
-              SoftIconWell(icon: widget.icon, size: 76),
-              const SizedBox(height: 22),
+              _HeroIcon(icon: widget.icon),
+              const SizedBox(height: 16),
               Text(
                 widget.title,
-                style: theme.textTheme.headlineMedium?.copyWith(
-                  fontWeight: FontWeight.w800,
-                  letterSpacing: -0.8,
+                style: theme.textTheme.headlineSmall?.copyWith(
+                  fontSize: 26,
+                  height: 32 / 26,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: -0.65,
                 ),
                 textAlign: TextAlign.center,
               ),
               if (widget.subtitle != null) ...[
-                const SizedBox(height: 8),
+                const SizedBox(height: 4),
                 Text(
                   widget.subtitle!,
                   style: theme.textTheme.bodyMedium?.copyWith(
-                    color: theme.colorScheme.onSurfaceVariant,
+                    color: theme.colorScheme.muted,
+                    height: 1.5,
                   ),
                   textAlign: TextAlign.center,
                 ),
               ],
-              const SizedBox(height: 28),
+              const SizedBox(height: 24),
               if (_isSubmitting)
                 const SizedBox.square(
                   dimension: 17,
@@ -143,6 +147,7 @@ class _PinEntryViewState extends State<PinEntryView> {
                           icon: Icons.error_outline,
                           color: theme.colorScheme.error,
                           uppercase: false,
+                          maxLines: 3,
                         ),
                       ),
                     if (lockedUntil != null && _isLockedOut)
@@ -167,6 +172,72 @@ class _PinEntryViewState extends State<PinEntryView> {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// The mark above the title: an icon in a white ring with a green "ready"
+/// badge.
+class _HeroIcon extends StatelessWidget {
+  const _HeroIcon({required this.icon});
+
+  final IconData icon;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final depth = context.depth;
+
+    return SizedBox.square(
+      dimension: 80,
+      child: Stack(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: depth.card,
+              boxShadow: const [
+                BoxShadow(
+                  color: Color(0x1A000000),
+                  blurRadius: 6,
+                  offset: Offset(0, 4),
+                  spreadRadius: -1,
+                ),
+              ],
+            ),
+            child: Container(
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: depth.pressed,
+              ),
+              child: Icon(icon, size: 28, color: scheme.primaryDeep),
+            ),
+          ),
+          Positioned(
+            right: 0,
+            bottom: 0,
+            child: Container(
+              width: 20,
+              height: 20,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: scheme.success,
+              ),
+              child: Container(
+                width: 8,
+                height: 8,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: depth.card,
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

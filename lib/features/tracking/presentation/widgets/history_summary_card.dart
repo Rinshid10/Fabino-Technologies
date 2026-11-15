@@ -48,7 +48,7 @@ class HistorySummaryCard extends StatelessWidget {
     final count = sessions.length;
 
     return SoftSurface(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
@@ -66,26 +66,28 @@ class HistorySummaryCard extends StatelessWidget {
           const SizedBox(height: 4),
           Text(
             Formatters.distance(total),
-            style: theme.textTheme.headlineMedium?.copyWith(
-              fontWeight: FontWeight.w800,
-              letterSpacing: -0.8,
+            style: theme.textTheme.headlineSmall?.copyWith(
+              fontSize: 26,
+              height: 32 / 26,
+              fontWeight: FontWeight.w700,
+              letterSpacing: -0.65,
             ),
           ),
-          const SizedBox(height: 14),
+          const SizedBox(height: 12),
           InsetPanel(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
                 const CapsLabel('Last 7 days'),
-                const SizedBox(height: 12),
+                const SizedBox(height: 8),
                 Semantics(
                   label:
                       '${Formatters.distance(perDay.fold(0, (a, b) => a + b))} '
                       'in the last 7 days',
                   child: ExcludeSemantics(
                     child: SizedBox(
-                      height: 78,
+                      height: 64,
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
@@ -128,7 +130,7 @@ class _DayBar extends StatelessWidget {
   final double fraction;
   final bool isToday;
 
-  static const _maxHeight = 52.0;
+  static const _maxHeight = 40.0;
   static const _minHeight = 8.0;
 
   @override
@@ -145,16 +147,19 @@ class _DayBar extends StatelessWidget {
           decoration: ShapeDecoration(
             shape: const StadiumBorder(),
             color: fraction == 0
-                ? scheme.primary.withValues(alpha: 0.18)
-                : scheme.primary.withValues(alpha: isToday ? 1 : 0.75),
+                ? scheme.pillFill(scheme.primary)
+                : isToday
+                ? scheme.primaryDeep
+                : scheme.primary,
           ),
         ),
-        const SizedBox(height: 6),
+        const SizedBox(height: 4),
         Text(
           letter,
           style: theme.textTheme.labelSmall?.copyWith(
-            color: isToday ? scheme.primary : scheme.onSurfaceVariant,
-            fontWeight: isToday ? FontWeight.w800 : FontWeight.w500,
+            color: isToday ? scheme.primaryDeep : scheme.onSurfaceVariant,
+            fontSize: 10,
+            fontWeight: isToday ? FontWeight.w700 : FontWeight.w400,
           ),
         ),
       ],
@@ -176,7 +181,7 @@ class SessionCard extends StatelessWidget {
 
     return SoftPressable(
       onTap: onTap,
-      padding: const EdgeInsets.all(18),
+      padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
@@ -197,8 +202,11 @@ class SessionCard extends StatelessWidget {
               Expanded(
                 child: Text(
                   Formatters.dateTime(session.startedAt),
-                  style: theme.textTheme.titleSmall?.copyWith(
+                  style: theme.textTheme.labelSmall?.copyWith(
+                    color: scheme.onSurfaceVariant,
+                    fontSize: 11,
                     fontWeight: FontWeight.w700,
+                    letterSpacing: 0.44,
                   ),
                 ),
               ),
@@ -221,7 +229,17 @@ class SessionCard extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 4),
+          Text(
+            '${Formatters.distance(session.distanceMeters)} route',
+            style: theme.textTheme.titleMedium?.copyWith(
+              fontSize: 17,
+              height: 22 / 17,
+              fontWeight: FontWeight.w600,
+              letterSpacing: -0.085,
+            ),
+          ),
+          const SizedBox(height: 8),
           Row(
             children: [
               Expanded(
@@ -244,10 +262,9 @@ class SessionCard extends StatelessWidget {
               ),
               const SizedBox(width: 8),
               InsetPanel(
-                padding: const EdgeInsets.all(8),
-                radius: 14,
+                padding: const EdgeInsets.all(4),
                 child: SizedBox.square(
-                  dimension: 38,
+                  dimension: 48,
                   child: CustomPaint(
                     painter: _RouteSketchPainter(
                       points: [
@@ -294,7 +311,9 @@ class _Number extends StatelessWidget {
           child: Text(
             value,
             style: theme.textTheme.titleSmall?.copyWith(
-              fontWeight: FontWeight.w800,
+              fontSize: 14,
+              fontWeight: FontWeight.w700,
+              letterSpacing: 0.14,
             ),
           ),
         ),

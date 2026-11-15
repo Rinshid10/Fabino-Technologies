@@ -109,7 +109,7 @@ class _GeofenceOverviewState extends State<_GeofenceOverview> {
       itemBuilder: (context, index) {
         if (index == 0) {
           return Padding(
-            padding: const EdgeInsets.fromLTRB(20, 0, 20, 14),
+            padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
             child: _FilterBar(
               selected: _filter,
               counts: {
@@ -121,7 +121,7 @@ class _GeofenceOverviewState extends State<_GeofenceOverview> {
           );
         }
         return Padding(
-          padding: const EdgeInsets.fromLTRB(20, 0, 20, 14),
+          padding: const EdgeInsets.fromLTRB(20, 0, 20, 8),
           child: GeofenceListTile(geofence: visible[index - 1]),
         );
       },
@@ -137,7 +137,7 @@ class _GeofenceOverviewState extends State<_GeofenceOverview> {
     }
     return Column(
       children: [
-        SizedBox(height: 210, child: map),
+        SizedBox(height: 200, child: map),
         Expanded(child: list),
       ],
     );
@@ -182,7 +182,7 @@ class _FilterBar extends StatelessWidget {
                   onTap: () => onSelected(filter),
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 180),
-                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    padding: const EdgeInsets.symmetric(vertical: 6),
                     alignment: Alignment.center,
                     decoration: ShapeDecoration(
                       shape: const StadiumBorder(),
@@ -194,8 +194,10 @@ class _FilterBar extends StatelessWidget {
                       '${_nameOf(filter)} (${counts[filter] ?? 0})',
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: theme.textTheme.labelLarge?.copyWith(
-                        fontWeight: FontWeight.w700,
+                      style: theme.textTheme.labelMedium?.copyWith(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: 0.24,
                         color: filter == selected
                             ? scheme.onPrimary
                             : scheme.onSurfaceVariant,
@@ -264,28 +266,40 @@ class GeofenceListTile extends ConsumerWidget {
     return SoftPressable(
       onTap: edit,
       semanticLabel: geofence.name,
-      padding: const EdgeInsets.all(18),
+      padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
           Row(
             children: [
-              SoftIconWell(
-                icon: isInside
-                    ? Icons.where_to_vote_outlined
-                    : Icons.radar_outlined,
-                color: isInside ? scheme.success : null,
-                size: 46,
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  color: scheme.pillFill(
+                    isInside ? scheme.success : scheme.primary,
+                  ),
+                ),
+                child: Icon(
+                  isInside
+                      ? Icons.where_to_vote_outlined
+                      : Icons.radar_outlined,
+                  size: 18,
+                  color: isInside ? scheme.success : scheme.primaryDeep,
+                ),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: 10),
               Expanded(
                 child: Text(
                   geofence.name,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: theme.textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w700,
+                    fontSize: 17,
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: -0.085,
                   ),
                 ),
               ),
@@ -296,9 +310,9 @@ class GeofenceListTile extends ConsumerWidget {
               ),
             ],
           ),
-          const SizedBox(height: 14),
+          const SizedBox(height: 8),
           InsetPanel(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             child: Row(
               children: [
                 Expanded(
@@ -318,22 +332,22 @@ class GeofenceListTile extends ConsumerWidget {
               ],
             ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 8),
           Row(
             children: [
               RoundIconButton(
                 icon: Icons.edit_outlined,
                 tooltip: 'Edit',
                 isFlat: true,
-                size: 42,
+                size: 36,
                 onPressed: edit,
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: 4),
               RoundIconButton(
                 icon: Icons.delete_outline,
                 tooltip: 'Delete',
                 isFlat: true,
-                size: 42,
+                size: 36,
                 color: scheme.error,
                 onPressed: () => confirmDeleteGeofence(context, ref, geofence),
               ),
@@ -358,7 +372,7 @@ class _Detail extends StatelessWidget {
     final scheme = theme.colorScheme;
     return Row(
       children: [
-        Icon(icon, size: 18, color: scheme.primary),
+        Icon(icon, size: 14, color: scheme.primaryDeep),
         const SizedBox(width: 8),
         Expanded(
           child: Column(
@@ -367,16 +381,21 @@ class _Detail extends StatelessWidget {
             children: [
               Text(
                 label,
-                style: theme.textTheme.bodySmall?.copyWith(
+                style: theme.textTheme.labelSmall?.copyWith(
                   color: scheme.onSurfaceVariant,
+                  fontSize: 11,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 0.44,
                 ),
               ),
               Text(
                 value,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: theme.textTheme.labelLarge?.copyWith(
-                  fontWeight: FontWeight.w700,
+                style: theme.textTheme.labelMedium?.copyWith(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 0.24,
                 ),
               ),
             ],
