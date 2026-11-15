@@ -5,6 +5,7 @@ import 'package:smart_access_security/core/widgets/confirm_dialog.dart';
 import 'package:smart_access_security/features/auth/domain/services/pin_rules.dart';
 import 'package:smart_access_security/features/auth/presentation/controllers/auth_controller.dart';
 import 'package:smart_access_security/features/auth/presentation/widgets/pin_entry_view.dart';
+import 'package:smart_access_security/features/auth/presentation/widgets/step_progress.dart';
 import 'package:smart_access_security/features/settings/presentation/controllers/settings_controller.dart';
 
 /// First-launch screen: choose a PIN, confirm it, optionally enable
@@ -73,6 +74,10 @@ class _PinSetupScreenState extends ConsumerState<PinSetupScreen> {
         // A new key resets the entered digits when the step changes.
         key: ValueKey(isConfirming),
         icon: Icons.shield_outlined,
+        header: StepProgress(
+          steps: const ['Create', 'Confirm'],
+          current: isConfirming ? 1 : 0,
+        ),
         title: isConfirming ? 'Confirm your PIN' : 'Create a PIN',
         subtitle: isConfirming
             ? 'Enter the same $kPinLength digits again.'

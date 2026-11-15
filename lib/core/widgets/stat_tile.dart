@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smart_access_security/core/widgets/pills.dart';
 
 /// A labelled number, such as "Distance 1.24 km".
 class StatTile extends StatelessWidget {
@@ -6,6 +7,7 @@ class StatTile extends StatelessWidget {
     required this.icon,
     required this.label,
     required this.value,
+    this.isAccent = false,
     super.key,
   });
 
@@ -15,25 +17,40 @@ class StatTile extends StatelessWidget {
   /// Either a ready string wrapped in [Text] or a live-updating widget.
   final Widget value;
 
+  /// Draws the value in the primary colour.
+  final bool isAccent;
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(icon, size: 20, color: theme.colorScheme.primary),
+        Row(
+          children: [
+            Icon(
+              icon,
+              size: 15,
+              color: isAccent ? scheme.primary : scheme.onSurfaceVariant,
+            ),
+            const SizedBox(width: 5),
+            Flexible(child: CapsLabel(label)),
+          ],
+        ),
         const SizedBox(height: 4),
         DefaultTextStyle.merge(
-          style: theme.textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.w600,
+          style: theme.textTheme.titleLarge?.copyWith(
+            color: isAccent ? scheme.primary : null,
+            fontWeight: FontWeight.w800,
+            letterSpacing: -0.4,
             fontFeatures: const [FontFeature.tabularFigures()],
           ),
-          child: FittedBox(fit: BoxFit.scaleDown, child: value),
-        ),
-        Text(
-          label,
-          style: theme.textTheme.labelSmall?.copyWith(
-            color: theme.colorScheme.onSurfaceVariant,
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerLeft,
+            child: value,
           ),
         ),
       ],
@@ -50,7 +67,13 @@ class StatRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      children: [for (final tile in children) Expanded(child: tile)],
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        for (final (index, tile) in children.indexed) ...[
+          if (index > 0) const SizedBox(width: 12),
+          Expanded(child: tile),
+        ],
+      ],
     );
   }
 }

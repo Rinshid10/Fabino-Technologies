@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:smart_access_security/core/theme/app_theme.dart';
+import 'package:smart_access_security/core/widgets/pills.dart';
 import 'package:smart_access_security/core/widgets/soft_surface.dart';
 
 /// Visual tone of a [StatusCard].
@@ -69,14 +70,20 @@ class StatusCard extends StatelessWidget {
     };
     final detail = this.detail;
 
-    final titleText = Text(
-      title,
-      style: theme.textTheme.labelMedium?.copyWith(
-        color: scheme.onSurfaceVariant,
-      ),
-      maxLines: 1,
-      overflow: TextOverflow.ellipsis,
-    );
+    final layout = StatusCardTheme.of(context);
+    final titleText = layout == StatusCardLayout.row
+        ? Text(
+            title,
+            style: theme.textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.w700,
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          )
+        : CapsLabel(title);
+    // Short values fit in a pill at the end of a row; long ones (such as
+    // coordinates) go under the title.
+    final isPillValue = value.length <= 12;
     final valueText = isLoading
         ? const Padding(
             padding: EdgeInsets.symmetric(vertical: 3),
@@ -108,14 +115,14 @@ class StatusCard extends StatelessWidget {
         ? null
         : Icon(Icons.chevron_right, size: 20, color: scheme.onSurfaceVariant);
 
-    return switch (StatusCardTheme.of(context)) {
+    return switch (layout) {
       StatusCardLayout.row => InkWell(
         onTap: onTap,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          padding: const EdgeInsets.fromLTRB(18, 14, 14, 14),
           child: Row(
             children: [
-              SoftIconWell(icon: icon, color: toneColor, size: 42),
+              SoftIconWell(icon: icon, color: toneColor, size: 48),
               const SizedBox(width: 14),
               Expanded(
                 child: Column(
@@ -123,12 +130,18 @@ class StatusCard extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     titleText,
-                    const SizedBox(height: 2),
-                    valueText,
+                    if (isLoading || !isPillValue) ...[
+                      const SizedBox(height: 2),
+                      valueText,
+                    ],
                     ?detailText,
                   ],
                 ),
               ),
+              if (!isLoading && isPillValue) ...[
+                const SizedBox(width: 8),
+                StatusPill(label: value, color: toneColor, uppercase: false),
+              ],
               ?chevron,
             ],
           ),
@@ -137,7 +150,7 @@ class StatusCard extends StatelessWidget {
       StatusCardLayout.tile => SoftPressable(
         onTap: onTap,
         semanticLabel: title,
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(18),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:smart_access_security/core/widgets/section_header.dart';
+import 'package:smart_access_security/core/theme/app_theme.dart';
+import 'package:smart_access_security/core/widgets/pills.dart';
 import 'package:smart_access_security/core/widgets/soft_surface.dart';
 import 'package:smart_access_security/features/location/domain/entities/location_status.dart';
 import 'package:smart_access_security/features/location/presentation/controllers/location_status_controller.dart';
@@ -54,19 +55,26 @@ class _LocationPermissionScreenState
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  const Center(
-                    child: SoftIconWell(
-                      icon: Icons.location_on_outlined,
-                      size: 84,
-                    ),
-                  ),
-                  const SizedBox(height: 28),
+                  const _Hero(),
+                  const SizedBox(height: 22),
                   Text(
                     'Allow location access',
-                    style: theme.textTheme.headlineSmall,
+                    style: theme.textTheme.headlineSmall?.copyWith(
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: -0.6,
+                    ),
                     textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 6),
+                  Text(
+                    'Your location is used on this device only. Nothing is '
+                    'uploaded.',
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 16),
                   const _Reason(
                     icon: Icons.map_outlined,
                     title: 'See where you are',
@@ -101,9 +109,10 @@ class _LocationPermissionScreenState
                       child: const Text('Open app settings'),
                     ),
                   ] else
-                    FilledButton(
+                    FilledButton.icon(
                       onPressed: _isRequesting ? null : _request,
-                      child: const Text('Allow location access'),
+                      icon: const Icon(Icons.location_on_outlined),
+                      label: const Text('Allow location access'),
                     ),
                   const SizedBox(height: 8),
                   TextButton(
@@ -129,13 +138,90 @@ class _Reason extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SoftPanel(
-      margin: const EdgeInsets.symmetric(vertical: 8),
-      padding: EdgeInsets.zero,
-      child: ListTile(
-        leading: SoftIconWell(icon: icon),
-        title: Text(title),
-        subtitle: Text(text),
+    final theme = Theme.of(context);
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6),
+      child: SoftSurface(
+        radius: 22,
+        padding: const EdgeInsets.all(14),
+        child: Row(
+          children: [
+            SoftIconWell(icon: icon, size: 44),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    title,
+                    style: theme.textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    text,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// The picture at the top: a shield inside two soft rings.
+class _Hero extends StatelessWidget {
+  const _Hero();
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+
+    Widget ring(double size, double alpha, {Widget? child}) {
+      return Container(
+        width: size,
+        height: size,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: scheme.primary.withValues(alpha: alpha),
+        ),
+        child: child,
+      );
+    }
+
+    return SoftSurface(
+      padding: const EdgeInsets.symmetric(vertical: 22),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ring(
+            132,
+            0.07,
+            child: ring(
+              100,
+              0.1,
+              child: Container(
+                width: 68,
+                height: 68,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: scheme.primary,
+                ),
+                child: Icon(Icons.shield, size: 32, color: scheme.onPrimary),
+              ),
+            ),
+          ),
+          const SizedBox(height: 14),
+          StatusPill(label: 'Works 100% offline', color: scheme.success),
+        ],
       ),
     );
   }

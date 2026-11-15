@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:smart_access_security/core/router/routes.dart';
 import 'package:smart_access_security/core/widgets/app_map.dart';
 import 'package:smart_access_security/core/widgets/async_value_view.dart';
+import 'package:smart_access_security/core/widgets/brand_title.dart';
+import 'package:smart_access_security/core/widgets/pills.dart';
 import 'package:smart_access_security/core/widgets/responsive.dart';
 import 'package:smart_access_security/features/geofence/presentation/controllers/geofence_list_controller.dart';
 import 'package:smart_access_security/features/geofence/presentation/widgets/geofence_layer.dart';
@@ -35,20 +39,10 @@ class MapScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final showPastRoutes = ref.watch(pastRoutesVisibleProvider);
-
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Location'),
-        actions: [
-          IconButton(
-            tooltip: showPastRoutes ? 'Hide past routes' : 'Show past routes',
-            isSelected: showPastRoutes,
-            icon: const Icon(Icons.timeline_outlined),
-            selectedIcon: const Icon(Icons.timeline),
-            onPressed: ref.read(pastRoutesVisibleProvider.notifier).toggle,
-          ),
-        ],
+        toolbarHeight: BrandTitle.toolbarHeight,
+        title: const BrandTitle('Map'),
       ),
       body: const LocationGate(
         purpose: 'The map needs your location to show where you are.',
@@ -105,8 +99,22 @@ class _CurrentLocationViewState extends ConsumerState<_CurrentLocationView> {
           onRefresh: _refreshAndRecenter,
         );
         final details = Padding(
-          padding: const EdgeInsets.all(12),
-          child: LocationDetailsCard(fix: fix),
+          padding: const EdgeInsets.fromLTRB(20, 4, 20, 12),
+          child: LocationDetailsCard(
+            fix: fix,
+            actions: [
+              FilledButton.icon(
+                onPressed: () => context.go(Routes.tracking),
+                icon: const Icon(Icons.play_arrow_rounded),
+                label: const Text('Track'),
+              ),
+              OutlinedButton.icon(
+                onPressed: () => context.push(Routes.newGeofence),
+                icon: const Icon(Icons.radar_outlined),
+                label: const Text('Geofence'),
+              ),
+            ],
+          ),
         );
 
         return Column(
@@ -154,7 +162,8 @@ class _LocationMap extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final scheme = Theme.of(context).colorScheme;
     final geofences = ref.watch(geofenceListControllerProvider).value ?? [];
-    final pastRoutes = ref.watch(pastRoutesVisibleProvider)
+    final showPastRoutes = ref.watch(pastRoutesVisibleProvider);
+    final pastRoutes = showPastRoutes
         ? ref.watch(trackingHistoryProvider).value ?? <TrackingSession>[]
         : const <TrackingSession>[];
 
@@ -175,18 +184,27 @@ class _LocationMap extends ConsumerWidget {
           ],
         ),
         Positioned(
-          right: 30,
-          bottom: 40,
-          child: FloatingActionButton(
-            heroTag: 'map-recenter',
-            tooltip: 'Refresh and recenter',
-            onPressed: isRefreshing ? null : onRefresh,
-            child: isRefreshing
-                ? const SizedBox.square(
-                    dimension: 22,
-                    child: CircularProgressIndicator(strokeWidth: 2.5),
-                  )
-                : const Icon(Icons.my_location),
+          right: 32,
+          top: 24,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              RoundIconButton(
+                icon: isRefreshing ? Icons.sync : Icons.my_location,
+                tooltip: 'Refresh and recenter',
+                color: scheme.primary,
+                onPressed: isRefreshing ? null : onRefresh,
+              ),
+              const SizedBox(height: 10),
+              RoundIconButton(
+                icon: showPastRoutes ? Icons.timeline : Icons.timeline_outlined,
+                tooltip: showPastRoutes
+                    ? 'Hide past routes'
+                    : 'Show past routes',
+                color: showPastRoutes ? scheme.primary : null,
+                onPressed: ref.read(pastRoutesVisibleProvider.notifier).toggle,
+              ),
+            ],
           ),
         ),
       ],

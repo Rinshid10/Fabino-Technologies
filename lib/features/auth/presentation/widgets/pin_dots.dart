@@ -27,14 +27,14 @@ class PinDots extends StatelessWidget {
             AnimatedContainer(
               duration: const Duration(milliseconds: 180),
               curve: Curves.easeOut,
-              margin: const EdgeInsets.symmetric(horizontal: 8),
-              width: 12,
-              height: 12,
+              margin: const EdgeInsets.symmetric(horizontal: 7),
+              width: 15,
+              height: 15,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: i < filled
                     ? activeColor
-                    : scheme.onSurface.withValues(alpha: 0.12),
+                    : scheme.primary.withValues(alpha: 0.2),
               ),
             ),
         ],

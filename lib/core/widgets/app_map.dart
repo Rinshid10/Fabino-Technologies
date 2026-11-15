@@ -71,10 +71,9 @@ class AppMap extends StatelessWidget {
 
     // The map is a rounded card like every other surface.
     return Padding(
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.fromLTRB(20, 8, 20, 12),
       child: SoftSurface(
-        radius: 22,
-        child: ClipRRect(borderRadius: BorderRadius.circular(22), child: map),
+        child: ClipRRect(borderRadius: BorderRadius.circular(28), child: map),
       ),
     );
   }

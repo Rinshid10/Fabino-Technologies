@@ -7,11 +7,14 @@ import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:smart_access_security/core/constants/app_constants.dart';
 import 'package:smart_access_security/core/notifications/notification_service.dart';
+import 'package:smart_access_security/core/theme/app_theme.dart';
 import 'package:smart_access_security/core/utils/clock.dart';
 import 'package:smart_access_security/core/utils/formatters.dart';
 import 'package:smart_access_security/core/widgets/app_map.dart';
 import 'package:smart_access_security/core/widgets/async_value_view.dart';
+import 'package:smart_access_security/core/widgets/pills.dart';
 import 'package:smart_access_security/core/widgets/responsive.dart';
+import 'package:smart_access_security/core/widgets/soft_surface.dart';
 import 'package:smart_access_security/core/widgets/state_views.dart';
 import 'package:smart_access_security/features/geofence/domain/entities/geofence.dart';
 import 'package:smart_access_security/features/geofence/presentation/controllers/geofence_list_controller.dart';
@@ -66,6 +69,9 @@ class _GeofenceForm extends ConsumerStatefulWidget {
 }
 
 class _GeofenceFormState extends ConsumerState<_GeofenceForm> {
+  /// Radii offered as one-tap shortcuts under the slider, in metres.
+  static const _radiusPresets = <double>[100, 250, 500, 1000];
+
   /// Shown until the user's position is known or a centre is picked.
   static const _worldCenter = LatLng(20, 0);
 
@@ -165,47 +171,82 @@ class _GeofenceFormState extends ConsumerState<_GeofenceForm> {
       ],
     );
 
+    final theme = Theme.of(context);
     final form = Form(
       key: _formKey,
       child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            TextFormField(
-              controller: _name,
-              maxLength: 40,
-              textCapitalization: TextCapitalization.words,
-              decoration: const InputDecoration(
-                labelText: 'Name',
-                hintText: 'Home, Office, School…',
-                counterText: '',
+        padding: const EdgeInsets.fromLTRB(20, 4, 20, 12),
+        child: SoftSurface(
+          padding: const EdgeInsets.all(18),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              TextFormField(
+                controller: _name,
+                maxLength: 40,
+                textCapitalization: TextCapitalization.words,
+                decoration: const InputDecoration(
+                  labelText: 'Name',
+                  hintText: 'Home, Office, School…',
+                  counterText: '',
+                ),
+                validator: (value) => (value ?? '').trim().isEmpty
+                    ? 'Give the geofence a name.'
+                    : null,
               ),
-              validator: (value) => (value ?? '').trim().isEmpty
-                  ? 'Give the geofence a name.'
-                  : null,
-            ),
-            const SizedBox(height: 16),
-            Text('Radius: ${Formatters.distance(_radius)}'),
-            Slider(
-              value: _radius,
-              min: GeofenceLimits.minRadius,
-              max: GeofenceLimits.maxRadius,
-              // 50 m steps.
-              divisions:
-                  (GeofenceLimits.maxRadius - GeofenceLimits.minRadius) ~/ 50,
-              label: Formatters.distance(_radius),
-              onChanged: (value) => setState(() => _radius = value),
-            ),
-            const SizedBox(height: 8),
-            FilledButton(
-              onPressed: center == null || _isSaving ? null : _save,
-              child: Text(
-                center == null ? 'Pick a place on the map' : 'Save geofence',
+              const SizedBox(height: 14),
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      'Fence radius',
+                      style: theme.textTheme.titleSmall?.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                  StatusPill(
+                    label: Formatters.distance(_radius),
+                    showDot: false,
+                    uppercase: false,
+                  ),
+                ],
               ),
-            ),
-          ],
+              Slider(
+                value: _radius,
+                min: GeofenceLimits.minRadius,
+                max: GeofenceLimits.maxRadius,
+                // 50 m steps.
+                divisions:
+                    (GeofenceLimits.maxRadius - GeofenceLimits.minRadius) ~/ 50,
+                label: Formatters.distance(_radius),
+                onChanged: (value) => setState(() => _radius = value),
+              ),
+              Row(
+                children: [
+                  for (final (index, preset) in _radiusPresets.indexed) ...[
+                    if (index > 0) const SizedBox(width: 8),
+                    Expanded(
+                      child: _RadiusPreset(
+                        label: Formatters.distance(preset),
+                        isSelected: _radius == preset,
+                        onTap: () => setState(() => _radius = preset),
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+              const SizedBox(height: 14),
+              FilledButton.icon(
+                onPressed: center == null || _isSaving ? null : _save,
+                icon: const Icon(Icons.add_location_alt_outlined),
+                label: Text(
+                  center == null ? 'Pick a place on the map' : 'Save geofence',
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -237,13 +278,58 @@ class _MapHint extends StatelessWidget {
     final scheme = Theme.of(context).colorScheme;
     return Material(
       color: scheme.inverseSurface,
-      borderRadius: BorderRadius.circular(8),
+      shape: const StadiumBorder(),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         child: Text(
           text,
           textAlign: TextAlign.center,
           style: TextStyle(color: scheme.onInverseSurface),
+        ),
+      ),
+    );
+  }
+}
+
+/// A one-tap radius shortcut under the slider.
+class _RadiusPreset extends StatelessWidget {
+  const _RadiusPreset({
+    required this.label,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  final String label;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+
+    return Semantics(
+      button: true,
+      selected: isSelected,
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: onTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 180),
+          padding: const EdgeInsets.symmetric(vertical: 9),
+          alignment: Alignment.center,
+          decoration: ShapeDecoration(
+            shape: const StadiumBorder(),
+            color: isSelected ? scheme.primary : context.depth.pressed,
+          ),
+          child: Text(
+            label,
+            maxLines: 1,
+            style: theme.textTheme.labelMedium?.copyWith(
+              fontWeight: FontWeight.w700,
+              color: isSelected ? scheme.onPrimary : scheme.onSurface,
+            ),
+          ),
         ),
       ),
     );

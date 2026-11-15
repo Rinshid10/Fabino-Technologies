@@ -112,8 +112,8 @@ void main() {
       'Location permission',
       'GPS',
       'Current location',
-      'Tracking',
-      'Geofences',
+      'TRACKING',
+      'GEOFENCES',
     ]) {
       expect(find.text(title), findsOneWidget, reason: title);
     }

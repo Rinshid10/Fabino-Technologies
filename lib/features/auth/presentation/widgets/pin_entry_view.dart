@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:smart_access_security/core/constants/app_constants.dart';
+import 'package:smart_access_security/core/widgets/pills.dart';
 import 'package:smart_access_security/core/widgets/soft_surface.dart';
 import 'package:smart_access_security/features/auth/presentation/widgets/lockout_countdown.dart';
 import 'package:smart_access_security/features/auth/presentation/widgets/pin_dots.dart';
@@ -20,6 +21,7 @@ class PinEntryView extends StatefulWidget {
     this.onLockoutExpired,
     this.padAction,
     this.icon = Icons.lock_outline,
+    this.header,
     super.key,
   });
 
@@ -38,6 +40,9 @@ class PinEntryView extends StatefulWidget {
   /// Extra key shown bottom-left of the pad (for example biometrics).
   final Widget? padAction;
   final IconData icon;
+
+  /// Shown above the icon, for example a step indicator.
+  final Widget? header;
 
   @override
   State<PinEntryView> createState() => _PinEntryViewState();
@@ -88,11 +93,18 @@ class _PinEntryViewState extends State<PinEntryView> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              if (widget.header != null) ...[
+                widget.header!,
+                const SizedBox(height: 24),
+              ],
               SoftIconWell(icon: widget.icon, size: 76),
-              const SizedBox(height: 24),
+              const SizedBox(height: 22),
               Text(
                 widget.title,
-                style: theme.textTheme.headlineSmall,
+                style: theme.textTheme.headlineMedium?.copyWith(
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: -0.8,
+                ),
                 textAlign: TextAlign.center,
               ),
               if (widget.subtitle != null) ...[
@@ -124,10 +136,14 @@ class _PinEntryViewState extends State<PinEntryView> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     if (errorText != null)
-                      Text(
-                        errorText,
-                        style: TextStyle(color: theme.colorScheme.error),
-                        textAlign: TextAlign.center,
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 8),
+                        child: StatusPill(
+                          label: errorText,
+                          icon: Icons.error_outline,
+                          color: theme.colorScheme.error,
+                          uppercase: false,
+                        ),
                       ),
                     if (lockedUntil != null && _isLockedOut)
                       LockoutCountdown(

@@ -7,7 +7,7 @@ import 'package:smart_access_security/core/theme/app_theme.dart';
 class SoftSurface extends StatelessWidget {
   const SoftSurface({
     required this.child,
-    this.radius = 20,
+    this.radius = 28,
     this.isPressed = false,
     this.isCircle = false,
     this.padding,
@@ -38,7 +38,7 @@ class SoftSurface extends StatelessWidget {
           BoxShadow(
             color: isPressed ? Colors.transparent : colors.shadow,
             offset: const Offset(0, 4),
-            blurRadius: 16,
+            blurRadius: 24,
           ),
         ],
       ),
@@ -55,7 +55,7 @@ class SoftPressable extends StatefulWidget {
   const SoftPressable({
     required this.child,
     this.onTap,
-    this.radius = 20,
+    this.radius = 28,
     this.isCircle = false,
     this.padding,
     this.fadeWhenDisabled = false,

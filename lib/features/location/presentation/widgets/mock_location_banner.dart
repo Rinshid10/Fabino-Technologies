@@ -7,8 +7,12 @@ class MockLocationBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    return Material(
-      color: scheme.errorContainer,
+    return Container(
+      margin: const EdgeInsets.fromLTRB(20, 4, 20, 4),
+      decoration: BoxDecoration(
+        color: scheme.errorContainer,
+        borderRadius: BorderRadius.circular(18),
+      ),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         child: Row(

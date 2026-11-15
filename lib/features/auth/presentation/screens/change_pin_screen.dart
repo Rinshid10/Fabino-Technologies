@@ -6,6 +6,7 @@ import 'package:smart_access_security/features/auth/domain/services/pin_rules.da
 import 'package:smart_access_security/features/auth/presentation/auth_labels.dart';
 import 'package:smart_access_security/features/auth/presentation/controllers/auth_controller.dart';
 import 'package:smart_access_security/features/auth/presentation/widgets/pin_entry_view.dart';
+import 'package:smart_access_security/features/auth/presentation/widgets/step_progress.dart';
 
 enum _Step { current, newPin, confirm }
 
@@ -82,6 +83,11 @@ class _ChangePinScreenState extends ConsumerState<ChangePinScreen> {
       body: PinEntryView(
         // A new key resets the entered digits when the step changes.
         key: ValueKey(_step),
+        icon: Icons.password,
+        header: StepProgress(
+          steps: const ['Current', 'New PIN', 'Confirm'],
+          current: _step.index,
+        ),
         title: title,
         subtitle: subtitle,
         errorText: _error,

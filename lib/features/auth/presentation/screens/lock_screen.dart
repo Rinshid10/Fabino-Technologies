@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:smart_access_security/features/auth/presentation/auth_labels.dart';
 import 'package:smart_access_security/features/auth/presentation/controllers/auth_controller.dart';
 import 'package:smart_access_security/features/auth/presentation/widgets/pin_entry_view.dart';
+import 'package:smart_access_security/features/auth/presentation/widgets/pin_pad.dart';
 import 'package:smart_access_security/features/settings/presentation/controllers/settings_controller.dart';
 
 /// Shown whenever the app is locked. Biometrics are offered when enabled;
@@ -81,10 +82,12 @@ class _LockScreenState extends ConsumerState<LockScreen> {
         }),
         onCompleted: _unlockWithPin,
         padAction: biometricsEnabled && biometricsAvailable
-            ? IconButton(
+            ? PinPadActionKey(
+                icon: Icons.fingerprint,
+                label: 'Biometrics',
                 tooltip: 'Unlock with biometrics',
+                isAccent: true,
                 onPressed: _unlockWithBiometrics,
-                icon: const Icon(Icons.fingerprint, size: 32),
               )
             : null,
       ),

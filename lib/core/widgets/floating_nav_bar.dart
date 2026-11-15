@@ -18,7 +18,7 @@ class FloatingNavItem {
 }
 
 /// A bottom navigation bar that floats above the screen edge as a rounded
-/// card. A solid capsule slides behind the icon of the selected item.
+/// card. A solid capsule slides behind the selected item.
 class FloatingNavBar extends StatelessWidget {
   const FloatingNavBar({
     required this.items,
@@ -32,7 +32,7 @@ class FloatingNavBar extends StatelessWidget {
   final ValueChanged<int> onSelected;
 
   static const _height = 70.0;
-  static const _indicatorSize = Size(56, 32);
+  static const _indicatorSize = Size(84, 54);
   static const _indicatorTop = 8.0;
   static const _duration = Duration(milliseconds: 280);
 
@@ -49,7 +49,7 @@ class FloatingNavBar extends StatelessWidget {
         child: DecoratedBox(
           decoration: BoxDecoration(
             color: depth.card,
-            borderRadius: BorderRadius.circular(26),
+            borderRadius: BorderRadius.circular(_height / 2),
             border: Border.all(
               color: scheme.outlineVariant.withValues(alpha: 0.35),
             ),
@@ -84,7 +84,7 @@ class FloatingNavBar extends StatelessWidget {
                       child: DecoratedBox(
                         decoration: BoxDecoration(
                           color: scheme.primary,
-                          borderRadius: BorderRadius.circular(16),
+                          borderRadius: BorderRadius.circular(27),
                           boxShadow: [
                             BoxShadow(
                               color: scheme.primary.withValues(alpha: 0.3),
@@ -148,9 +148,9 @@ class _NavItem extends StatelessWidget {
         onTap: onTap,
         child: Column(
           children: [
-            const SizedBox(height: FloatingNavBar._indicatorTop),
+            const SizedBox(height: FloatingNavBar._indicatorTop + 6),
             SizedBox(
-              height: FloatingNavBar._indicatorSize.height,
+              height: 24,
               child: AnimatedSwitcher(
                 duration: FloatingNavBar._duration,
                 child: Icon(
@@ -163,7 +163,7 @@ class _NavItem extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: 2),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 2),
               child: AnimatedDefaultTextStyle(
@@ -176,7 +176,7 @@ class _NavItem extends StatelessWidget {
                           ? FontWeight.w700
                           : FontWeight.w500,
                       color: isSelected
-                          ? scheme.primary
+                          ? scheme.onPrimary
                           : scheme.onSurfaceVariant,
                     ),
                 child: Text(

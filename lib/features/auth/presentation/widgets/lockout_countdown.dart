@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:smart_access_security/core/widgets/pills.dart';
 
 /// Shows "Try again in N s" until [until], then calls [onExpired] once.
 class LockoutCountdown extends StatefulWidget {
@@ -48,10 +49,11 @@ class _LockoutCountdownState extends State<LockoutCountdown> {
     // Round up so the text never shows "0 s" while still locked.
     final seconds = (_remaining.inMilliseconds / 1000).ceil().clamp(0, 86400);
     final text = seconds >= 60 ? '${(seconds / 60).ceil()} min' : '$seconds s';
-    return Text(
-      'Try again in $text',
-      style: TextStyle(color: Theme.of(context).colorScheme.error),
-      textAlign: TextAlign.center,
+    return StatusPill(
+      label: 'Try again in $text',
+      icon: Icons.schedule,
+      color: Theme.of(context).colorScheme.onSurfaceVariant,
+      uppercase: false,
     );
   }
 }

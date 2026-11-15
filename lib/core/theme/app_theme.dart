@@ -44,12 +44,15 @@ class DepthTheme extends ThemeExtension<DepthTheme> {
 abstract final class AppTheme {
   static const _seed = Color(0xFF3D6DEB);
 
-  static const _lightBackground = Color(0xFFF4F5F8);
+  /// Bundled with the app, so it works offline.
+  static const fontFamily = 'PlusJakartaSans';
+
+  static const _lightBackground = Color(0xFFF8F9FF);
   static const _darkBackground = Color(0xFF14161A);
 
   static const _lightDepth = DepthTheme(
     card: Color(0xFFFFFFFF),
-    pressed: Color(0xFFECEFF5),
+    pressed: Color(0xFFEFF4FF),
     shadow: Color(0x141B2A4A),
   );
   static const _darkDepth = DepthTheme(
@@ -71,6 +74,8 @@ abstract final class AppTheme {
     final isLight = brightness == Brightness.light;
     final background = isLight ? _lightBackground : _darkBackground;
     final depth = depthFor(brightness);
+    final onSurface = isLight ? const Color(0xFF0B1C30) : null;
+    final onSurfaceVariant = isLight ? const Color(0xFF434654) : null;
     final scheme =
         ColorScheme.fromSeed(
           seedColor: _seed,
@@ -79,18 +84,23 @@ abstract final class AppTheme {
           primary: isLight ? _seed : const Color(0xFF8CA8FF),
           onPrimary: isLight ? Colors.white : const Color(0xFF0E1B3D),
           surface: background,
+          onSurface: onSurface,
+          onSurfaceVariant: onSurfaceVariant,
+          error: isLight ? const Color(0xFFBA1A1A) : null,
           surfaceContainerLowest: depth.card,
           surfaceContainerLow: depth.card,
           surfaceContainer: depth.card,
           surfaceContainerHigh: depth.card,
           surfaceContainerHighest: depth.pressed,
         );
-    const buttonShape = RoundedRectangleBorder(
-      borderRadius: BorderRadius.all(Radius.circular(14)),
+    const buttonShape = StadiumBorder();
+    const menuShape = RoundedRectangleBorder(
+      borderRadius: BorderRadius.all(Radius.circular(18)),
     );
 
     return ThemeData(
       useMaterial3: true,
+      fontFamily: fontFamily,
       colorScheme: scheme,
       scaffoldBackgroundColor: background,
       extensions: [depth],
@@ -101,8 +111,10 @@ abstract final class AppTheme {
         scrolledUnderElevation: 0,
         titleTextStyle: TextStyle(
           color: scheme.onSurface,
+          fontFamily: fontFamily,
           fontSize: 22,
-          fontWeight: FontWeight.w600,
+          fontWeight: FontWeight.w700,
+          letterSpacing: -0.3,
         ),
       ),
       navigationRailTheme: NavigationRailThemeData(
@@ -111,10 +123,27 @@ abstract final class AppTheme {
       ),
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
-          minimumSize: const Size(64, 52),
+          minimumSize: const Size(64, 56),
           shape: buttonShape,
           elevation: 0,
-          textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+          textStyle: const TextStyle(
+            fontFamily: fontFamily,
+            fontSize: 16,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+      ),
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          minimumSize: const Size(64, 56),
+          shape: buttonShape,
+          backgroundColor: depth.pressed,
+          side: BorderSide.none,
+          textStyle: const TextStyle(
+            fontFamily: fontFamily,
+            fontSize: 16,
+            fontWeight: FontWeight.w700,
+          ),
         ),
       ),
       textButtonTheme: TextButtonThemeData(
@@ -135,20 +164,20 @@ abstract final class AppTheme {
         surfaceTintColor: Colors.transparent,
         elevation: 2,
         shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(22)),
+          borderRadius: BorderRadius.all(Radius.circular(28)),
         ),
       ),
       popupMenuTheme: PopupMenuThemeData(
         color: depth.card,
         surfaceTintColor: Colors.transparent,
         elevation: 3,
-        shape: buttonShape,
+        shape: menuShape,
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: depth.pressed,
         border: const OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(14)),
+          borderRadius: BorderRadius.all(Radius.circular(18)),
           borderSide: BorderSide.none,
         ),
       ),
@@ -157,7 +186,7 @@ abstract final class AppTheme {
       ),
       snackBarTheme: const SnackBarThemeData(
         behavior: SnackBarBehavior.floating,
-        shape: buttonShape,
+        shape: menuShape,
       ),
     );
   }
@@ -176,10 +205,10 @@ extension DepthContext on BuildContext {
 /// Semantic colours that are not part of [ColorScheme].
 extension StatusColors on ColorScheme {
   Color get success => brightness == Brightness.light
-      ? const Color(0xFF1B7F3B)
+      ? const Color(0xFF006C49)
       : const Color(0xFF7BD992);
 
   Color get warning => brightness == Brightness.light
-      ? const Color(0xFF9A6200)
+      ? const Color(0xFF835200)
       : const Color(0xFFF2BE5C);
 }

@@ -3,8 +3,11 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:smart_access_security/core/router/routes.dart';
+import 'package:smart_access_security/core/theme/app_theme.dart';
 import 'package:smart_access_security/core/widgets/app_map.dart';
 import 'package:smart_access_security/core/widgets/async_value_view.dart';
+import 'package:smart_access_security/core/widgets/brand_title.dart';
+import 'package:smart_access_security/core/widgets/pills.dart';
 import 'package:smart_access_security/core/widgets/responsive.dart';
 import 'package:smart_access_security/core/widgets/soft_surface.dart';
 import 'package:smart_access_security/features/location/presentation/controllers/location_providers.dart';
@@ -23,13 +26,15 @@ class TrackingScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Tracking'),
+        toolbarHeight: BrandTitle.toolbarHeight,
+        title: const BrandTitle('Tracking'),
         actions: [
-          IconButton(
+          RoundIconButton(
             tooltip: 'History',
-            icon: const Icon(Icons.history),
+            icon: Icons.history,
             onPressed: () => context.push(Routes.trackingHistory),
           ),
+          const SizedBox(width: 20),
         ],
       ),
       body: const LocationGate(
@@ -146,18 +151,44 @@ class _ControlPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
     final session = tracking.session;
+    final isMocked = session?.hadMockedLocation ?? false;
 
     return Padding(
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.fromLTRB(20, 4, 20, 12),
       child: SoftSurface(
         child: Padding(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(18),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      session == null ? 'Ready to track' : 'Active session',
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                  if (session != null)
+                    StatusPill(
+                      label: isMocked ? 'Mock location' : 'Live',
+                      color: isMocked ? scheme.error : scheme.success,
+                    )
+                  else
+                    const StatusPill(
+                      label: 'Stored on device',
+                      icon: Icons.cloud_off_outlined,
+                      uppercase: false,
+                    ),
+                ],
+              ),
+              const SizedBox(height: 14),
               if (session != null) ...[
                 SessionStats(
                   session: session,
@@ -170,19 +201,21 @@ class _ControlPanel extends StatelessWidget {
                     foregroundColor: scheme.onError,
                   ),
                   onPressed: onStop,
-                  icon: const Icon(Icons.stop),
+                  icon: const Icon(Icons.stop_circle_outlined),
                   label: const Text('Stop tracking'),
                 ),
               ] else ...[
                 Text(
                   'Record your route, distance and speed. Tracking keeps '
                   'running when the app is locked or minimised.',
-                  style: Theme.of(context).textTheme.bodyMedium,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: scheme.onSurfaceVariant,
+                  ),
                 ),
                 const SizedBox(height: 16),
                 FilledButton.icon(
                   onPressed: tracking.isStarting ? null : onStart,
-                  icon: const Icon(Icons.play_arrow),
+                  icon: const Icon(Icons.play_arrow_rounded),
                   label: Text(
                     tracking.isStarting ? 'Starting…' : 'Start tracking',
                   ),

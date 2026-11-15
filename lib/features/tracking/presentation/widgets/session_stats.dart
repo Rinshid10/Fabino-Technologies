@@ -32,6 +32,7 @@ class SessionStats extends StatelessWidget {
         StatTile(
           icon: Icons.speed,
           label: isLive ? 'Speed' : 'Avg speed',
+          isAccent: true,
           value: Text(Formatters.speed(liveSpeed ?? session.averageSpeed)),
         ),
         StatTile(

@@ -2,19 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:smart_access_security/core/router/routes.dart';
-import 'package:smart_access_security/core/utils/formatters.dart';
 import 'package:smart_access_security/core/widgets/async_value_view.dart';
 import 'package:smart_access_security/core/widgets/responsive.dart';
 import 'package:smart_access_security/core/widgets/section_header.dart';
-import 'package:smart_access_security/core/widgets/soft_surface.dart';
 import 'package:smart_access_security/core/widgets/state_views.dart';
-import 'package:smart_access_security/features/tracking/domain/entities/tracking_session.dart';
 import 'package:smart_access_security/features/tracking/presentation/controllers/tracking_history_controller.dart';
 import 'package:smart_access_security/features/tracking/presentation/widgets/history_actions.dart';
+import 'package:smart_access_security/features/tracking/presentation/widgets/history_summary_card.dart';
 
-/// All saved tracking sessions, newest first.
+/// A summary of everything recorded, then all saved sessions, newest
+/// first.
 class TrackingHistoryScreen extends ConsumerWidget {
   const TrackingHistoryScreen({super.key});
+
+  static const _gutter = EdgeInsets.symmetric(horizontal: 20);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -37,46 +38,32 @@ class TrackingHistoryScreen extends ConsumerWidget {
               )
             : ContentWidth(
                 child: ListView.builder(
-                  padding: const EdgeInsets.symmetric(vertical: 12),
-                  itemCount: sessions.length,
-                  itemBuilder: (context, index) => SoftPanel(
-                    child: SessionListTile(session: sessions[index]),
-                  ),
+                  padding: const EdgeInsets.only(top: 8, bottom: 24),
+                  // The summary and the heading come before the sessions.
+                  itemCount: sessions.length + 2,
+                  itemBuilder: (context, index) {
+                    if (index == 0) {
+                      return Padding(
+                        padding: _gutter,
+                        child: HistorySummaryCard(sessions: sessions),
+                      );
+                    }
+                    if (index == 1) {
+                      return const SectionHeader('Recorded sessions');
+                    }
+                    final session = sessions[index - 2];
+                    return Padding(
+                      padding: _gutter.add(const EdgeInsets.only(bottom: 14)),
+                      child: SessionCard(
+                        session: session,
+                        onTap: () =>
+                            context.push(Routes.sessionDetail(session.id)),
+                      ),
+                    );
+                  },
                 ),
               ),
       ),
-    );
-  }
-}
-
-/// One row of the history list.
-class SessionListTile extends StatelessWidget {
-  const SessionListTile({required this.session, super.key});
-
-  final TrackingSession session;
-
-  @override
-  Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-    return ListTile(
-      leading: const SoftIconWell(icon: Icons.route_outlined),
-      title: Text(Formatters.dateTime(session.startedAt)),
-      subtitle: Text(
-        '${Formatters.distance(session.distanceMeters)} · '
-        '${Formatters.duration(session.duration)}',
-      ),
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (session.hadMockedLocation)
-            Tooltip(
-              message: 'Mock location was detected',
-              child: Icon(Icons.warning_amber_rounded, color: scheme.error),
-            ),
-          const Icon(Icons.chevron_right),
-        ],
-      ),
-      onTap: () => context.push(Routes.sessionDetail(session.id)),
     );
   }
 }
