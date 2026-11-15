@@ -105,13 +105,6 @@ abstract final class AppTheme {
           fontWeight: FontWeight.w600,
         ),
       ),
-      navigationBarTheme: NavigationBarThemeData(
-        backgroundColor: depth.card,
-        surfaceTintColor: Colors.transparent,
-        elevation: 0,
-        indicatorColor: scheme.primary.withValues(alpha: 0.12),
-        height: 68,
-      ),
       navigationRailTheme: NavigationRailThemeData(
         backgroundColor: depth.card,
         indicatorColor: scheme.primary.withValues(alpha: 0.12),

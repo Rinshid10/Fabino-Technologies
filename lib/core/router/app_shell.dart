@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:smart_access_security/core/widgets/floating_nav_bar.dart';
 import 'package:smart_access_security/core/widgets/responsive.dart';
 
 /// One tab of the main navigation.
@@ -66,15 +67,15 @@ class AppShell extends StatelessWidget {
 
     return Scaffold(
       body: navigationShell,
-      bottomNavigationBar: NavigationBar(
+      bottomNavigationBar: FloatingNavBar(
         selectedIndex: index,
-        onDestinationSelected: _select,
-        destinations: [
+        onSelected: _select,
+        items: [
           for (final item in destinations)
-            NavigationDestination(
-              icon: Icon(item.icon),
-              selectedIcon: Icon(item.selectedIcon),
+            FloatingNavItem(
               label: item.label,
+              icon: item.icon,
+              selectedIcon: item.selectedIcon,
             ),
         ],
       ),
