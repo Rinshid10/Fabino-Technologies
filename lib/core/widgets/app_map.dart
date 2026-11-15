@@ -5,8 +5,9 @@ import 'package:smart_access_security/core/widgets/soft_surface.dart';
 
 /// The app's map: OpenStreetMap tiles plus whatever [layers] a screen adds.
 ///
-/// Every screen uses this instead of `FlutterMap` directly so tile source,
-/// attribution and zoom limits are defined once.
+/// Every screen uses this instead of `FlutterMap` directly so tile source
+/// and zoom limits are defined once. The map data credit is
+/// shown in Settings, not on the map itself.
 class AppMap extends StatelessWidget {
   const AppMap({
     required this.initialCenter,
@@ -63,9 +64,6 @@ class AppMap extends StatelessWidget {
           userAgentPackageName: _userAgent,
         ),
         ...layers,
-        const SimpleAttributionWidget(
-          source: Text('OpenStreetMap contributors'),
-        ),
       ],
     );
 

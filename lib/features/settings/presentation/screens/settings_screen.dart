@@ -23,7 +23,28 @@ class SettingsScreen extends StatelessWidget {
             AppearanceSection(),
             SecuritySection(),
             DataSection(),
+            _MapCredit(),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Credit for the map data, required by the OpenStreetMap licence.
+class _MapCredit extends StatelessWidget {
+  const _MapCredit();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(24, 20, 24, 0),
+      child: Text(
+        'Map data © OpenStreetMap contributors',
+        textAlign: TextAlign.center,
+        style: theme.textTheme.bodySmall?.copyWith(
+          color: theme.colorScheme.onSurfaceVariant,
         ),
       ),
     );
