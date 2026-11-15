@@ -14,7 +14,7 @@ reverse geocoder.
 |---|---|
 | App lock | 6-digit PIN set on first launch, biometric unlock with PIN fallback, wrong-PIN throttling, auto-lock after background time or inactivity |
 | Location | Permission explanation before the system dialog, latitude / longitude / accuracy (good, fair, poor), address, map with refresh and recenter |
-| Tracking | Start / stop sessions, live polyline, distance, speed, duration, background tracking, mock-location warning |
+| Tracking | Start / stop sessions, live polyline, distance, speed, duration, background tracking, mock-location warning and notification |
 | History | Saved sessions, detail screen with the route, export to CSV / JSON, clear history |
 | Geofencing | Create by tapping or long-pressing the map, name and radius (50–2000 m), edit, delete, entry / exit notifications |
 | Dashboard | Cards for biometrics, permission, GPS, current location, tracking, geofences and last authentication |
@@ -169,7 +169,7 @@ used for export.
 | `permission_handler` | Notification permission request |
 | `flutter_map`, `latlong2` | Map with OpenStreetMap tiles, no API key |
 | `hive_ce`, `hive_ce_flutter` | Fast local key-value storage for settings, geofences and sessions |
-| `flutter_local_notifications` | Tracking and geofence notifications |
+| `flutter_local_notifications` | Tracking, geofence and mock-location notifications |
 | `path_provider`, `share_plus`, `csv` | Writing and sharing export files |
 | `no_screenshot` | Screenshot and screen-recording protection |
 | `freezed`, `json_serializable` | Immutable models with equality and JSON |
@@ -191,7 +191,7 @@ Changes from the suggested list:
 flutter test
 ```
 
-132 tests cover:
+142 tests cover:
 
 - repositories: settings, PIN, tracking sessions, geofences (real Hive in a
   temporary directory)
@@ -201,8 +201,9 @@ flutter test
 - PIN throttling, PIN rules, the lock redirect guard
 - the single position subscription under rapid acquire / release
 - export to CSV and JSON
-- widgets: lock screen (PIN, biometric success, cancel, lockout) and the
-  dashboard on a small phone and a tablet
+- the mock-location alert (one notification when faking starts)
+- widgets: lock screen (PIN, biometric success, cancel, lockout), the
+  dashboard on a small phone and a tablet, and the navigation bar
 
 ## Known limitations
 
@@ -220,7 +221,9 @@ flutter test
   stationary and stops them if the user force-quits the app.
 - **Android battery optimisation** on some manufacturers can still stop the
   foreground service during long sessions.
-- **Mock-location detection is Android only.** iOS does not expose it.
+- **Mock-location detection depends on the platform.** Android reports
+  positions from a mock-location app. iOS reports software-simulated
+  positions on iOS 15 and later only; hardware spoofers are not detected.
 - **Screenshot protection is app-wide.** When enabled it covers every screen,
   including the lock screen, PIN screens and dashboard. It is off by default.
 - **A forgotten PIN cannot be recovered.** There is no account; reinstalling
@@ -233,15 +236,16 @@ flutter test
 
 ## Screenshots
 
-| Lock screen | Dashboard | Map |
-|---|---|---|
-| ![Lock screen](docs/screenshots/lock_screen.png) | _add `docs/screenshots/dashboard.png`_ | _add `docs/screenshots/map.png`_ |
+| PIN set-up | Lock screen | Dashboard | Map | Tracking |
+|---|---|---|---|---|
+| ![PIN set-up](docs/screenshots/pin_setup.jpg) | ![Lock screen](docs/screenshots/lock.jpg) | ![Dashboard](docs/screenshots/dashboard.jpg) | ![Map](docs/screenshots/map.jpg) | ![Tracking](docs/screenshots/tracking.jpg) |
 
-| Tracking | Geofences | Settings |
-|---|---|---|
-| _add `docs/screenshots/tracking.png`_ | _add `docs/screenshots/geofences.png`_ | _add `docs/screenshots/settings.png`_ |
+| History | Session detail | Geofences | Geofence editor | Settings |
+|---|---|---|---|---|
+| ![Tracking history](docs/screenshots/history.jpg) | ![Session detail](docs/screenshots/session.jpg) | ![Geofences](docs/screenshots/geofences.jpg) | ![Geofence editor](docs/screenshots/geofence_editor.jpg) | ![Settings](docs/screenshots/settings.jpg) |
 
-Screenshot protection must be off (the default) to capture these.
+A screen-by-screen guide, including how to check each bonus feature, is in
+[docs/Smart_Access_App_Guide.pdf](docs/Smart_Access_App_Guide.pdf).
 
 ## Screen recording
 
