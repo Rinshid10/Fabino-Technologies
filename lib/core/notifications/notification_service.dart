@@ -16,6 +16,11 @@ enum NotificationChannel {
     id: 'geofence',
     name: 'Geofence alerts',
     description: 'Entering or leaving a geofence.',
+  ),
+  security(
+    id: 'security',
+    name: 'Security alerts',
+    description: 'Mock locations and other security warnings.',
   )
   ;
 
@@ -33,6 +38,7 @@ enum NotificationChannel {
 /// Fixed ids for notifications that replace their previous version.
 abstract final class NotificationIds {
   static const tracking = 1;
+  static const mockLocation = 2;
 }
 
 /// Shows local notifications. Nothing is ever sent over the network.

@@ -5,6 +5,7 @@ import 'package:smart_access_security/core/security/screen_protection.dart';
 import 'package:smart_access_security/core/theme/app_theme.dart';
 import 'package:smart_access_security/features/auth/presentation/controllers/auto_lock_controller.dart';
 import 'package:smart_access_security/features/geofence/presentation/controllers/geofence_monitor.dart';
+import 'package:smart_access_security/features/location/presentation/controllers/mock_location_monitor.dart';
 import 'package:smart_access_security/features/settings/presentation/controllers/settings_controller.dart';
 import 'package:smart_access_security/features/settings/presentation/settings_labels.dart';
 
@@ -22,6 +23,8 @@ class SmartAccessApp extends ConsumerWidget {
     // Geofence entry / exit detection runs for the app's whole lifetime.
     ref
       ..watch(geofenceMonitorProvider)
+      // Notifies when positions start coming from a mock-location app.
+      ..watch(mockLocationMonitorProvider)
       // Applies the screenshot-protection setting to the platform.
       ..watch(screenProtectionProvider);
 

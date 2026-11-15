@@ -98,7 +98,7 @@ final class CurrentLocationProvider
   CurrentLocation create() => CurrentLocation();
 }
 
-String _$currentLocationHash() => r'bd625e1b8d8744e00150f9a5c2d2bfd1f2154a43';
+String _$currentLocationHash() => r'a81f61220485c71bfa34ff706792407ee0cafa34';
 
 /// The device's current position.
 ///

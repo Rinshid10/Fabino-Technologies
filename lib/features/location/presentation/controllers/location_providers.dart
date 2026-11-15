@@ -9,6 +9,7 @@ import 'package:smart_access_security/features/location/domain/entities/location
 import 'package:smart_access_security/features/location/domain/entities/location_status.dart';
 import 'package:smart_access_security/features/location/domain/services/position_stream_service.dart';
 import 'package:smart_access_security/features/location/presentation/controllers/location_status_controller.dart';
+import 'package:smart_access_security/features/location/presentation/controllers/mock_location_monitor.dart';
 
 part 'location_providers.g.dart';
 
@@ -57,7 +58,10 @@ class CurrentLocation extends _$CurrentLocation {
         .listen((fix) => state = AsyncData(fix), onError: (Object _) {});
     ref.onDispose(liveFixes.cancel);
 
-    return ref.watch(locationRepositoryProvider).getCurrentFix();
+    final fix = await ref.watch(locationRepositoryProvider).getCurrentFix();
+    // A one-off fix does not pass through the shared stream.
+    ref.read(mockLocationAlertProvider).check(fix);
+    return fix;
   }
 
   /// Requests a fresh fix, keeping the old one visible while loading.
