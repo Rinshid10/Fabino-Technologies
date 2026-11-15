@@ -31,5 +31,24 @@ void main() {
     test('accuracy rounds to whole metres', () {
       expect(Formatters.accuracy(12.4), '±12 m');
     });
+
+    test('dateTime uses a 12-hour clock with am and pm', () {
+      expect(
+        Formatters.dateTime(DateTime(2026, 11, 15, 9, 5)),
+        '15 Nov 2026, 9:05 am',
+      );
+      expect(
+        Formatters.dateTime(DateTime(2026, 11, 15, 15, 30)),
+        '15 Nov 2026, 3:30 pm',
+      );
+      expect(
+        Formatters.dateTime(DateTime(2026, 11, 15, 12)),
+        '15 Nov 2026, 12:00 pm',
+      );
+      expect(
+        Formatters.dateTime(DateTime(2026, 11, 15)),
+        '15 Nov 2026, 12:00 am',
+      );
+    });
   });
 }

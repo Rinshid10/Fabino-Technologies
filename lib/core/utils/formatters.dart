@@ -2,7 +2,7 @@ import 'package:intl/intl.dart';
 
 /// Pure helpers that turn raw values into display strings.
 abstract final class Formatters {
-  static final _dateTime = DateFormat('d MMM y, HH:mm');
+  static final _dateTime = DateFormat('d MMM y, h:mm a');
   static final _fileStamp = DateFormat('yyyyMMdd_HHmmss');
 
   /// `850 m` below one kilometre, `1.24 km` above.
@@ -33,8 +33,13 @@ abstract final class Formatters {
   /// `±12 m`.
   static String accuracy(double meters) => '±${meters.round()} m';
 
-  /// `14 Nov 2026, 09:30` in local time.
-  static String dateTime(DateTime value) => _dateTime.format(value.toLocal());
+  /// `14 Nov 2026, 9:30 am`: the phone's local time on a 12-hour clock.
+  static String dateTime(DateTime value) {
+    return _dateTime
+        .format(value.toLocal())
+        .replaceFirst('AM', 'am')
+        .replaceFirst('PM', 'pm');
+  }
 
   /// A timestamp that is safe to use in a file name.
   static String fileStamp(DateTime value) => _fileStamp.format(value);

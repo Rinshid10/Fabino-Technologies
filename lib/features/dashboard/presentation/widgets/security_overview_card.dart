@@ -107,12 +107,6 @@ class SecurityOverviewCard extends ConsumerWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                const SizedBox(width: 8),
-                const StatusPill(
-                  label: 'Offline',
-                  icon: Icons.cloud_off_outlined,
-                  uppercase: false,
-                ),
               ],
             ),
           ),
