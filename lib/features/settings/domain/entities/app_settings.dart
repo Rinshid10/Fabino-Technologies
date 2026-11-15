@@ -26,7 +26,7 @@ enum AutoLockDuration {
 abstract class AppSettings with _$AppSettings {
   const factory AppSettings({
     @Default(AppThemeMode.system) AppThemeMode themeMode,
-    @Default(AutoLockDuration.minute1) AutoLockDuration autoLockDuration,
+    @Default(AutoLockDuration.immediately) AutoLockDuration autoLockDuration,
     @Default(false) bool biometricsEnabled,
     @Default(false) bool screenshotProtection,
   }) = _AppSettings;

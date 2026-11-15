@@ -212,7 +212,7 @@ return $default(_that.themeMode,_that.autoLockDuration,_that.biometricsEnabled,_
 @JsonSerializable()
 
 class _AppSettings implements AppSettings {
-  const _AppSettings({this.themeMode = AppThemeMode.system, this.autoLockDuration = AutoLockDuration.minute1, this.biometricsEnabled = false, this.screenshotProtection = false});
+  const _AppSettings({this.themeMode = AppThemeMode.system, this.autoLockDuration = AutoLockDuration.immediately, this.biometricsEnabled = false, this.screenshotProtection = false});
   factory _AppSettings.fromJson(Map<String, dynamic> json) => _$AppSettingsFromJson(json);
 
 @override@JsonKey() final  AppThemeMode themeMode;

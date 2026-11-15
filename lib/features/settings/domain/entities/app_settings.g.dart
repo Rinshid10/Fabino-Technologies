@@ -15,7 +15,7 @@ _AppSettings _$AppSettingsFromJson(Map<String, dynamic> json) => _AppSettings(
         _$AutoLockDurationEnumMap,
         json['autoLockDuration'],
       ) ??
-      AutoLockDuration.minute1,
+      AutoLockDuration.immediately,
   biometricsEnabled: json['biometricsEnabled'] as bool? ?? false,
   screenshotProtection: json['screenshotProtection'] as bool? ?? false,
 );
