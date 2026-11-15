@@ -29,7 +29,7 @@ class SmartAccessApp extends ConsumerWidget {
       ..watch(screenProtectionProvider);
 
     return MaterialApp.router(
-      title: 'Smart Access & Location Security',
+      title: 'Febno',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light(),
       darkTheme: AppTheme.dark(),

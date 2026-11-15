@@ -20,7 +20,7 @@
 
     <!-- allowBackup=false: security data must never leave the device. -->
     <application
-        android:label="Smart Access Security"
+        android:label="Febno"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
         android:allowBackup="false"
